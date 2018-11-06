@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang = "en">
+	<head>
+		<meta charset="utf-8">
+		<title>Solutions</title>
+		<script src="https://d3js.org/d3.v5.js"></script>
+	</head>
+    <body style="background-color: rgb(255, 255, 255);">
+        
+        <!-- BODY -->
+        <h1>Tasks 1</h1>
+        <h2 id="yearHeader"></h2>
+        <h2 id="t2"></h2>
+
+        <script>
+            //Create SVG elements for task 2
+            // Define nice big margins for axes sides
+            let margin = {top: 10, right: 10, bottom: 25, left: 80};
+            //SVG spec task2
+            let outer_width = 700;
+            let outer_height = 250;
+            let inner_width = outer_width - margin.left - margin.right;
+            let inner_height = outer_height - margin.top - margin.bottom;
+
+            svgVar2 = d3.select("#t2")
+                        .append("svg")
+                        .style("background", "aliceblue")
+                        .attr("width", outer_width)
+                        .attr("height", outer_height)
+                        .append("g")
+			            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Load .csv file for task 2	
+            d3.csv("./data/Top10WorldPopulations2005_2015.csv")
+                .then(function(data) {
+                    // The year to display
+			        let display_year = 2005;
+
+                    // Filter the data to only include the selected year
+                    let filtered_data = data.filter( function (value){
+                            return (value.Year == display_year)
+                        });
+
+                    //set up scales and axes
+                    let scales_axes = scalesAndAxes(svgVar2, filtered_data);
+
+                    //execute a data visualisation
+                    horizBarChartScaleAxes(svgVar2, filtered_data, scales_axes.scales, scales_axes.axes);
+                    // Set the year label
+				    d3.select("#yearHeader").text("Year: " + display_year);
+
+
+                    // Set up a callback so we iterate through the years
+					setInterval(function() {
+						display_year++;
+						if(display_year > 2015){
+							display_year = 2005;
+						}
+
+                        // Filter the data to only include the selected year
+                        let filtered_data = data.filter( function (value){
+                                return (value.Year == display_year)
+                            });
+
+                        let scales_axes = scalesAndAxes(svgVar2, filtered_data);
+
+                        horizBarChartScaleAxes(svgVar2, filtered_data, scales_axes.scales, scales_axes.axes);
+                        // Set the year label
+				        d3.select("#yearHeader").text("Year: " + display_year);
+					}, 4000);
+            });
+
+            function scalesAndAxes(svg, data) {
+                // Calculate scale from the dataset
+                let yScale = d3.scaleBand()
+                                .domain(data.map(function(d) { return d.Country}))
+                                .range([0, inner_height]);
+
+                let xScale = d3.scaleLinear()
+                                .domain([0, d3.max(data, function(d){ return +d.Population})])
+                                .range([0, inner_width]);
+                            
+                // Create an x-axis connected to the x scale
+                let xAxis = d3.axisBottom()
+                                .scale(xScale)
+                                .ticks(3);
+
+                //Define Y axis
+                let yAxis = d3.axisLeft()
+                                .scale(yScale);
+                            
+                // Call the x-axis
+                svg.append("g")
+                    .attr("class", "axis")
+                    .attr("id", "Xaxis")
+                    .attr("transform", "translate(0," + inner_height + ")");
+                    //.call(xAxis);
+                    
+                // Call the y-axis
+                svg.append("g")
+                    .attr("class", "axis")
+                    .attr("id", "Yaxis");
+                    //.call(yAxis);
+
+                return {scales: {yscale: yScale, xscale: xScale},
+                         axes: {
+                                xaxis: {axis: xAxis, id: "#"+"Xaxis"},
+                                yaxis: {axis: yAxis, id: "#"+"Yaxis"}}
+                                };
+            }
+
+            //visualisation function
+            function horizBarChartScaleAxes(svg, data, scales, axes) {
+
+                //call the axes functions to apply any updates
+                svg.select(axes.xaxis.id).call(axes.xaxis.axis);
+                svg.select(axes.yaxis.id).call(axes.yaxis.axis);
+
+                //General update pattern
+                /******** PERFORM DATA JOIN ************/
+			  	// Join new data with old elements, if any.
+			  	let bars = 	svg.selectAll("rect")
+                                .data(data, function key(d) { //joining by key from Country field
+                                                return d.Country;
+                                            });
+			
+			 	/******** HANDLE UPDATE SELECTION ************/
+			  	// Update the display of existing elelemnts to match new data
+			  	bars.transition()
+			  		.duration(2000)
+			  		.attr("x", 0)
+                    .attr("y", function(d) {
+                        return scales.yscale(d.Country);
+                    })
+                    .attr("width", function(d) {
+                        return scales.xscale(d.Population);
+                    })
+                    .attr("height", scales.yscale.bandwidth()-5)
+                    .style("fill", "Green");
+					   
+			
+				/******** HANDLE ENTER SELECTION ************/
+			  	// Create new elements in the dataset
+			  	bars.enter()
+                    .append("rect")
+                    .attr("x", 0)
+                    .attr("y", function(d) {
+                        return scales.yscale(d.Country);
+                    })
+                    .attr("width", function(d) {
+                        return scales.xscale(d.Population);
+                    })
+                    .attr("height", scales.yscale.bandwidth()-5)
+                    .style("fill", "Blue");
+			
+				/******** HANDLE EXIT SELECTION ************/
+				// Remove bars that not longer have a matching data eleement
+				bars.exit().remove();
+            }
+        </script>
+	</body>
+</html>
