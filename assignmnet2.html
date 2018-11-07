@@ -20,22 +20,90 @@
     <meta charset="utf-8">
     <title>Solutions</title>
     <script src="https://d3js.org/d3.v5.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body style="background-color: aliceblue">
 
-    <!-- BODY -->
-    <h1 id="hans">Channeling Hans</h1>
-    <h3 id="year_header">Year: 2007</h3>
-    <h2 id="g1"></h2>
+    <div class="container">
+        <div class="jumbotron">
+            <h1>Channeling Hans</h1>
+            <p>by Jonathan Leon, Xinyue Wang and Ernestas Monkevicius</p>
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#queryControl">Learn More</button>
+            <br/>
+            <div id="queryControl" class="collapse">
+                <br/>
+                <p>
+                    Hans Rosling is a data visualisation legend. His 2006 TED talk, "The Best Stats	
+                    You’ve Ever Seen", is one of the most viewed videos on the TED website.
+                <p>
+                    In this	assignment, Jonathan Leon, Xinyue Wang and Ernestas Monkevicius have been tasked to create	
+                    an information visualisations that is an homage	to Hans	Rosling. The result may be viewed below.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- <div class="col-xs-12">
+                <h1 id="hans">Channeling Hans</h1>
+            </div> -->
+            <div class="col-xs-12">
+                    <h3 id="year_header">Year: 2007</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 id="g1"></h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <button type="button" class="btn btn-success" id="playPauseButton"><span class="glyphicon glyphicon-play"></span><br/><p>Play</p></button>
+            </div>
+            <div class="col-xs-10">
+                <!--<form class="range-field">
+                    <input type="range" value="2007" min="2007" max="2017" />
+                </form>-->
+                <div data-role="main" class="ui-content">
+                    <form method="post">
+                        <label for="yearSlider">Year:</label>
+                        <input type="range" name="yearSlider" id="yearSlider" value="2007" min="2007" max="2017">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
+        //initial state of the visualization animation
+        let playing = false;
+        //assigning callbacks to play/pause button
+        $( "#playPauseButton" ).on( "click", function() {
+            //let rows = $('#...').val();
+            playing = !playing;
+            if (playing) {
+                $( '#playPauseButton' ).addClass('btn-danger').removeClass('btn-success');
+                $( '#playPauseButton span' ).addClass('glyphicon-pause').removeClass('glyphicon-play');
+                $( '#playPauseButton p' ).text("Pause");
+            } else {
+                $( '#playPauseButton' ).addClass('btn-success').removeClass('btn-danger');
+                $( '#playPauseButton span' ).addClass('glyphicon-play').removeClass('glyphicon-pause');
+                $( '#playPauseButton p' ).text("Play");
+            }
+            console.log("Button state:: is playing? "+playing); //TESTING
+        });
+
+        //define input file
+        let file = "GCI_CompleteData3.csv";
+
         // Define margins
-        var margin = { top: 10, right: 10, bottom: 45, left: 45 };
+        var margin = { top: 10, right: 10, bottom: 45, left: 55 };
 
         //Width and height
-        var outer_width = 1200;
-        var outer_height = 500;
+        var outer_width = 1100;
+        var outer_height = 450;
         var svg_width = outer_width - margin.left - margin.right;
         var svg_height = outer_height - margin.top - margin.bottom;
 
@@ -52,7 +120,8 @@
             .append("svg")
             .attr("width", svg_width + margin.left + margin.right)
             .attr("height", svg_height + margin.top + margin.bottom)
-            //.style("fill", "white")
+            .style("background", "white")
+            //.style("width", "80vw")
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         //.style("fill", "white");
@@ -139,10 +208,10 @@
             .text("Global Competitive Index");
 
         // Define a fucntion to draw a simple bar chart
-        function generateVis() {
+        function generateVis(data) {
 
             // Filter the data to only include the current year
-            var filtered_datset = dataset.filter(yearFilter);
+            var filtered_datset = data.filter(yearFilter);
 
             // Update the domain of the x scale
             //xScale.domain(filtered_datset.map(function(d) { return d.Company; }));
@@ -259,37 +328,6 @@
 
         }
 
-        // Load the file data.csv and generate a visualisation based on it
-        // d3.csv("GCI_CompleteData2.csv").then(function(data){
-        d3.csv("GCI_CompleteData3.csv").then(function (data) {
-
-            console.log(data); //TESTING
-
-            // Assign  the data object loaded to the global dataset variable
-            dataset = data;
-
-            // Update the domain of the x scale
-            //xScale.domain(dataset.map(function(d) { return d.GDP; }));
-            // Call the x-axis
-            svg.select("#x-axis").call(xAxis);
-
-            // Generate the visualisation
-            generateVis();
-
-            // Iterate through our avilable years.
-            setInterval(function () {
-                display_year = display_year + 1;
-                if (display_year > 2017) {
-                    display_year = 2007;
-                }
-                generateVis();
-            }, 4000);
-        }, function (error) {
-            console.log("Error Loading data!");
-            console.log(error);
-            document.getElementById("hans").innerHTML += "<span style=\"color: red;\"> Error Loading Data! Please check that GCI_CompleteData2.csv is present in the same directory as this html file.</span>";
-        });
-    
         //Add legend frame
         var legend_margin = { top: 10, right: 10, bottom: 10, left: 10 };
         var rect_width = svg_width*0.2;
@@ -303,7 +341,8 @@
         .style("fill", "lightsteelblue")
         .style("opacity",.9)
         ;
-        //Add circles and Text
+
+        //Add legend rects and Text
         var legend_circle_r = svg_width*0.01;
         svg.append("rect")
         .attr("id","blue")
@@ -331,6 +370,16 @@
         .attr("height", legend_circle_r)
         .style("fill", "orange")
         ;
+
+        svg.append("rect")
+        // .attr("id","blue")
+        .attr("x", svg_width-rect_width+legend_margin.left)
+        .attr("y", legend_margin.top+3*(gap+legend_circle_r))
+        .attr("width", legend_circle_r)
+        .attr("height", legend_circle_r)
+        .style("fill", "red")
+        ;
+
         svg.append("text")
         .attr("transform",
                 "translate(" + (svg_width-rect_width+legend_margin.left+legend_circle_r+gap) + " ," +
@@ -351,6 +400,50 @@
                 (legend_margin.top+2*(gap+legend_circle_r)+10) + ")")
             // .style("text-anchor", "middle")
             .text("Missing Value");
+
+        svg.append("text")
+        .attr("transform",
+                "translate(" + (svg_width-rect_width+legend_margin.left+legend_circle_r+gap) + " ," +
+                (legend_margin.top+3*(gap+legend_circle_r)+10) + ")")
+            // .style("text-anchor", "middle")
+            .text("Exiting");
+
+
+        // Load the file data.csv and generate a visualisation based on it
+        d3.csv(file).then(function (data) {
+            console.log(data); //TESTING
+            //handle the loaded data
+            handleData(data);
+        }, function (error) {
+            console.log("Error Loading data!");
+            console.log(error);
+            document.getElementById("hans").innerHTML += "<span style=\"color: red;\"> Error Loading Data! Please check that "+file+" is present in the same directory as this html file.</span>";
+        });
+
+        function handleData(dataset){
+            // Update the domain of the x scale
+            //xScale.domain(dataset.map(function(d) { return d.GDP; }));
+            // Call the x-axis
+            svg.select("#x-axis").call(xAxis);
+
+            // Generate the visualisation
+            generateVis(dataset);
+
+            // Iterate through our avilable years.
+
+
+            //setTimeout() runs only ONCE as oppose to setInterval() which loops automatically
+            //since we want to control playback ourselves, we can't use setInterval()
+            setInterval(function () {
+                if(playing){
+                    display_year = display_year + 1;
+                    if (display_year > 2017) {
+                        display_year = 2007;
+                    }
+                    generateVis(dataset);
+                }
+            }, 4000);
+        }
 
     </script>
 </body>
