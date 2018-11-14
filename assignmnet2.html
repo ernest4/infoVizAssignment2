@@ -25,6 +25,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
+<!-- Jonathan and Ernestas body Bootstrap START -->
 <body style="background-color: aliceblue">
 
     <div class="container">
@@ -75,6 +76,7 @@
             </div>
         </div>
     </div>
+    <!-- Jonathan and Ernestas body Bootstrap END -->
 
     <script>
         //initial state of the visualization animation
@@ -147,6 +149,7 @@
         // .style("fill", "blue")
         // ;
 
+        //-- Wang and Ernestas Main Graph Axes START --//
         // Create linear Y scale for Global Competitive Index
         var yScale = d3.scaleLinear()
             .domain([0, 7])
@@ -207,7 +210,10 @@
             .style("text-anchor", "middle")
             .text("Global Competitive Index");
 
+        //-- Wang and Ernestas Main Graph Axes END --//
+
         // Define a fucntion to draw a simple bar chart
+        //-- Wang and Ernestas Main Graph START --//
         function generateVis(data) {
 
             // Filter the data to only include the current year
@@ -327,7 +333,10 @@
             d3.select("#year_header").text("Year: " + display_year)
 
         }
+        //-- Wang and Ernestas Main Graph END --//
 
+
+        //-- Jonathan and Wang Graph Legend START --//
         //Add legend frame
         var legend_margin = { top: 10, right: 10, bottom: 10, left: 10 };
         var rect_width = svg_width*0.2;
@@ -407,8 +416,10 @@
                 (legend_margin.top+3*(gap+legend_circle_r)+10) + ")")
             // .style("text-anchor", "middle")
             .text("Exiting");
+        //-- Jonathan and Wang Graph Legend END --//
 
 
+        //-- Ernestas and Jonathan File Loading START --//
         // Load the file data.csv and generate a visualisation based on it
         d3.csv(file).then(function (data) {
             console.log(data); //TESTING
@@ -444,6 +455,7 @@
                 }
             }, 4000);
         }
+        //-- Ernestas and Jonathan File Loading END --//
 
     </script>
 </body>
