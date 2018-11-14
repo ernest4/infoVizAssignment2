@@ -39,6 +39,7 @@
                 <p>
                     Hans Rosling is a data visualisation legend. His 2006 TED talk, "The Best Stats	
                     You’ve Ever Seen", is one of the most viewed videos on the TED website.
+                </p>
                 <p>
                     In this	assignment, Jonathan Leon, Xinyue Wang and Ernestas Monkevicius have been tasked to create	
                     an information visualisations that is an homage	to Hans	Rosling. The result may be viewed below.
@@ -64,14 +65,56 @@
                 <button type="button" class="btn btn-success" id="playPauseButton"><span class="glyphicon glyphicon-play"></span><br/><p>Play</p></button>
             </div>
             <div class="col-xs-10">
-                <!--<form class="range-field">
-                    <input type="range" value="2007" min="2007" max="2017" />
-                </form>-->
-                <div data-role="main" class="ui-content">
-                    <form method="post">
-                        <label for="yearSlider">Year:</label>
-                        <input type="range" name="yearSlider" id="yearSlider" value="2007" min="2007" max="2017">
-                    </form>
+                <div class="row">
+                    <div class="col-xs-1">
+                        <!-- space -->
+                    </div>
+                    <div class="col-xs-1">
+                        2007
+                    </div>
+                    <div class="col-xs-1">
+                        2008
+                    </div>
+                    <div class="col-xs-1">
+                        2009
+                    </div>
+                    <div class="col-xs-1">
+                        2010
+                    </div>
+                    <div class="col-xs-1">
+                        2011
+                    </div>
+                    <div class="col-xs-1">
+                        2012
+                    </div>
+                    <div class="col-xs-1">
+                        2013
+                    </div>
+                    <div class="col-xs-1">
+                        2014
+                    </div>
+                    <div class="col-xs-1">
+                        2015
+                    </div>
+                    <div class="col-xs-1">
+                        2016
+                    </div>
+                    <div class="col-xs-1">
+                        2017
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-1">
+                        <!-- space -->
+                    </div>
+                    <div class="col-xs-11">
+                        <div data-role="main" class="ui-content">
+                            <form method="post">
+                                <label for="yearSlider">Year:</label>
+                                <input type="range" name="yearSlider" id="yearSlider" value="2007" min="2007" max="2017">
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -97,6 +140,16 @@
             console.log("Button state:: is playing? "+playing); //TESTING
         });
 
+         // The year to display
+        let display_year = 2007;
+        let dataset = {};
+
+        document.getElementById("yearSlider").oninput = function() {
+            console.log("Year Slider:: value -> "+this.value); //TESTING
+            display_year = +this.value;
+            generateVis(dataset);
+        };
+
         //define input file
         let file = "GCI_CompleteData3.csv";
 
@@ -108,9 +161,6 @@
         var outer_height = 450;
         var svg_width = outer_width - margin.left - margin.right;
         var svg_height = outer_height - margin.top - margin.bottom;
-
-        // The year to display
-        display_year = 2007;
 
         // define a function that filters data by year
         function yearFilter(value) {
@@ -242,7 +292,7 @@
             // Perform a data join and add points to the chart
             points
                 .transition()
-                .duration(2000)
+                .duration(1000)
                 .attr("cx", function (d) {
                     return d.GDP ? xScale(+d.GDP) : margin.left;
                 })
@@ -304,7 +354,7 @@
                 });
 
             enter.transition()
-                .duration(2000)
+                .duration(1000)
                 .ease(d3.easeBounce)
                 .attr("r", function (d) {
                     if (d.Population) {
@@ -325,12 +375,12 @@
             points.exit()
                 .style("fill", "red")
                 .transition()
-                .duration(2000)
+                .duration(1000)
                 .attr("r", 0)
                 .remove();
 
             // Set the year label
-            d3.select("#year_header").text("Year: " + display_year)
+            d3.select("#year_header").text("Year: " + display_year);
 
         }
         //-- Wang and Ernestas Main Graph END --//
@@ -423,8 +473,9 @@
         // Load the file data.csv and generate a visualisation based on it
         d3.csv(file).then(function (data) {
             console.log(data); //TESTING
+            dataset = data;
             //handle the loaded data
-            handleData(data);
+            handleData(dataset);
         }, function (error) {
             console.log("Error Loading data!");
             console.log(error);
@@ -446,14 +497,17 @@
             //setTimeout() runs only ONCE as oppose to setInterval() which loops automatically
             //since we want to control playback ourselves, we can't use setInterval()
             setInterval(function () {
+
                 if(playing){
-                    display_year = display_year + 1;
                     if (display_year > 2017) {
                         display_year = 2007;
                     }
                     generateVis(dataset);
+
+                    document.getElementById("yearSlider").value = display_year;
+                    display_year = display_year + 1;
                 }
-            }, 4000);
+            }, 2000);
         }
         //-- Ernestas and Jonathan File Loading END --//
 
