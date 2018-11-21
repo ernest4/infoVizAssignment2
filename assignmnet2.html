@@ -28,6 +28,8 @@
 <!-- Jonathan and Ernestas body Bootstrap START -->
 <body style="background-color: aliceblue">
 
+    <!-- NOTE: Many of the bootstrap components used in this assignment are adaptions from: https://getbootstrap.com/docs/3.3/components/ -->
+
     <div class="container">
         <div class="jumbotron">
             <h1>Channeling Hans</h1>
@@ -48,11 +50,24 @@
         </div>
 
         <div class="row">
-            <!-- <div class="col-xs-12">
-                <h1 id="hans">Channeling Hans</h1>
-            </div> -->
-            <div class="col-xs-12">
-                    <h3 id="year_header">Year: 2007</h3>
+            <div class="col-xs-2">
+                <h3 id="year_header" style="margin-top: 0;">Year: 2007</h3>
+            </div>
+            <div class="col-xs-4">
+                <!-- Split button for choosing country and showing it's trace -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: black;">Select Country <span class="caret"></span></button>
+                    <button type="button" class="btn btn-primary" id="showTraceButton"><span>Show Trace</span></button>
+                    <ul class="dropdown-menu">
+                    <li><a href="#">Country1</a></li>
+                    <li><a href="#">Country2</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">Country3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <!-- space -->
             </div>
         </div>
         <div class="row">
@@ -138,7 +153,28 @@
                 $( '#playPauseButton span' ).addClass('glyphicon-play').removeClass('glyphicon-pause');
                 $( '#playPauseButton p' ).text("Play");
             }
-            console.log("Button state:: is playing? "+playing); //TESTING
+            console.log("Play/Pause Button state:: is playing? "+playing); //TESTING
+        });
+
+        let showingTrace = false;
+        //assign callback to show trace button
+        $( "#showTraceButton" ).on( "click", function() {
+            //let rows = $('#...').val();
+            showingTrace = !showingTrace;
+            if (showingTrace) {
+                $( '#showTraceButton' ).addClass('btn-danger').removeClass('btn-primary');
+                //$( '#showTraceButton span' ).addClass('glyphicon-pause').removeClass('glyphicon-play');
+                $( '#showTraceButton span' ).text("Hide Trace");
+
+                //showTrace(country, true);
+            } else {
+                $( '#showTraceButton' ).addClass('btn-primary').removeClass('btn-danger');
+                //$( '#showTraceButton span' ).addClass('glyphicon-play').removeClass('glyphicon-pause');
+                $( '#showTraceButton span' ).text("Show Trace");
+
+                //showTrace(country, false);
+            }
+            console.log("Show Trace Button state:: is showing trace? "+showingTrace); //TESTING
         });
 
          // The year to display
@@ -492,6 +528,9 @@
             // Generate the visualisation
             generateVis(dataset);
 
+            //Populate the country drop down
+            populateCountryTraceDropdown(dataset);
+
             // Iterate through our avilable years.
 
 
@@ -511,6 +550,10 @@
             }, 2000);
         }
         //-- Ernestas and Jonathan File Loading END --//
+
+        function populateCountryTraceDropdown(data){
+            //...
+        }
 
     </script>
 </body>
