@@ -705,22 +705,8 @@
                 countrySet.add(row.Country); //Add each country to a set
             });
 
-            //console.log("popCountryTraceDropdown:: ->"); //TESTING
-            //console.log(countrySet.keys()); //TESTING
-
             for (let country of countrySet) {
-                //console.log(country); //TESTING
-
                 let countryDropDownUL = document.getElementById("countryDropDown");
-
-                /*let li = document.createElement('li');
-                let a = document.createElement('a');
-                a.setAttribute("href", "#");
-                a.innerText = country;
-                
-                li.appendChild(a);
-                countryDropDownUL.appendChild(li);*/
-
                 let option = document.createElement('option')
                 option.setAttribute("value", country);
 
