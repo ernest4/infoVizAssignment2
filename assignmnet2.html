@@ -1,3 +1,8 @@
+<!-- 
+    Feature to do:
+    1. color bubble with region.
+    2. Initial page with first graph open
+ -->
 <!DOCTYPE html>
 <html lang="en">
 <style>
@@ -207,15 +212,59 @@
                 $( '#playPauseButton' ).addClass('btn-danger').removeClass('btn-success');
                 $( '#playPauseButton span' ).addClass('glyphicon-pause').removeClass('glyphicon-play');
                 $( '#playPauseButton p' ).text("Pause");
+                // if (showingTrace) leaveTrace
             } else {
                 $( '#playPauseButton' ).addClass('btn-success').removeClass('btn-danger');
                 $( '#playPauseButton span' ).addClass('glyphicon-play').removeClass('glyphicon-pause');
                 $( '#playPauseButton p' ).text("Play");
             }
-            console.log("Play/Pause Button state:: is playing? "+playing); //TESTING
+            // console.log("Play/Pause Button state:: is playing? "+playing); //TESTING
         });
 
-        let showingTrace = false;
+
+        // ==================================================================
+        // Helper functions that makes a country circle outstanding....or not!
+        // ==================================================================
+        function outstandACountry (country) {
+            svg.selectAll("circle")
+            .transition().duration(1000).ease(d3.easeLinear).style("opacity", .1);
+            svg.select("#"+country)
+            .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
+        };
+
+        function AllCountryLookTheSame (country) {
+            svg.selectAll("circle")
+            .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
+            // svg.select("#"+country)
+            // .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
+        };
+
+        // function leaveTrace (country) {
+        //     svg.append("circle")
+        //     .attr("cx", function (d) {
+        //             return d.GDP ? xScale(+d.GDP) : margin.left;
+        //         })
+        //         .attr("cy", function (d) {
+        //             return d.Global_Competitiveness_Index ? yScale(+d.Global_Competitiveness_Index) : svg_height;
+        //         })
+        //         .attr("r", function (d) {
+        //             //Divide 90000 since the smallest country's population is so.
+        //             if (d.Population) {
+        //                 let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
+        //                 return circleArea;
+        //             } else return 0;
+        //         })
+        //         .style("fill", function (d) {
+        //             return d.Global_Competitiveness_Index ? "green" : "orange";
+        //         })
+        //         .style("stroke", "black")
+        //         ;
+        // }
+
+        // ===========================
+        // Drop down box to show trace
+        // ===========================
+        var showingTrace = false;
         //assign callback to show trace button
         $( "#showTraceButton" ).on( "click", function() {
             let country = $('#countryDropDownInput').val();
@@ -229,14 +278,14 @@
             if (showingTrace) {
                 $( '#showTraceButton' ).addClass('btn-danger').removeClass('btn-primary');
                 $( '#showTraceButton span' ).text("Hide Trace");
-
-                //showTrace(country, true); //Show the trace for a country
+                outstandACountry(country);
+                // leaveTrace(country);
 
             } else {
                 $( '#showTraceButton' ).addClass('btn-primary').removeClass('btn-danger');
                 $( '#showTraceButton span' ).text("Show Trace");
-
-                //showTrace(country, false); //Hide the trace for a country
+                AllCountryLookTheSame(country);
+                //showTrace(country, showingTrace); //Hide the trace for a country
 
             }
             
@@ -362,26 +411,6 @@
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        //Add legend frame
-        // var legend_margin = { top: 10, right: 10, bottom: 10, left: 10 };
-        // var rect_width = svg_width*0.2;
-        // var rect_height = svg_height*.2;
-        // svg.append("rect")
-        // .attr("x", svg_width-rect_width)
-        // .attr("y", 0)
-        // .attr("width", rect_width)
-        // .attr("height", rect_height)
-        // .style("fill", "lightsteelblue")
-        // .style("opacity",.9)
-        // ;
-        // //Add circles and Text
-        // var legend_circle_r = svg_width*0.05;
-        // svg.append("circle")
-        // .attr("cx", svg_width-rect_width+legend_margin.left)
-        // .attr("cy", legend_margin.top)
-        // .attr("r", legend_circle_r)
-        // .style("fill", "blue")
-        // ;
 
         //-- Wang and Ernestas Main Graph Axes START --//
         // Create linear Y scale for Global Competitive Index
@@ -470,6 +499,7 @@
                 .data(filtered_datset, function key(d) {
                     return d.Country;
                 });
+            // console.log("Points"+points);
 
             /******** HANDLE UPDATE SELECTION ************/
             // Update the display of existing elelemnts to match new data
@@ -489,26 +519,48 @@
                         let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
                         return circleArea;
                     } else return 0;
-
                 })
                 .style("fill", function (d) {
                     return d.Global_Competitiveness_Index ? "green" : "orange";
                 })
                 .style("stroke", "black")
                 ;
-            // .on("mouseover", function (d) {
-            //     div.transition()
-            //         .duration(200)
-            //         .style("opacity", .9);
-            //     div.html(d.Country)
-            //         .style("left", (d3.event.pageX) + "px")
-            //         .style("top", (d3.event.pageY - 28) + "px");
-            // })
-            // .on("mouseout", function (d) {
-            //     div.transition()
-            //         .duration(500)
-            //         .style("opacity", 0);
-            // });
+
+
+            // =======================
+            // If showingTrace = True;
+            // =======================
+            function countryFilter(value) {
+                return value.country == country;
+            }
+
+            if (showingTrace){
+                // console.log("Showing TRue!!")
+                let country = $('#countryDropDownInput').val();
+                selectedCountryInfo = filtered_datset.filter(countryFilter);
+                console.log(selectedCountryInfo);
+                svg.select("#"+country)
+                .append("circle")
+                .attr("cx", function (d) {
+                    // console.log(d.GDP);
+                    return d.GDP ? xScale(+d.GDP) : margin.left;
+                })
+                .attr("cy", function (d) {
+                    return d.Global_Competitiveness_Index ? yScale(+d.Global_Competitiveness_Index) : svg_height;
+                })
+                .attr("r", function (d) {
+                    //Divide 90000 since the smallest country's population is so.
+                    if (d.Population) {
+                        let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
+                        return circleArea;
+                    } else return 0;
+                })
+                .style("fill", function (d) {
+                    return d.Global_Competitiveness_Index ? "green" : "orange";
+                })
+                .style("stroke", "black")
+                ;
+            }
 
 
             /******** HANDLE ENTER SELECTION ************/
@@ -516,6 +568,9 @@
             // Perform a data join and add points to the chart
             var enter = points.enter()
                 .append("circle")
+                .attr("id", function(d) {
+                    return d.Country;
+                })
                 .attr("cx", function (d) {
                     // console.log(d.GDP);
                     return d.GDP ? xScale(+d.GDP) : margin.left;
