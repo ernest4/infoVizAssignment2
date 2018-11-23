@@ -36,42 +36,30 @@
 
     <!-- NOTE: Many of the bootstrap components used in this assignment are adaptions from: https://getbootstrap.com/docs/3.3/components/ -->
 
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#" style="font-size: 14px;">
+                <b>Channeling Hans </b> by Jonathan Leon, Xinyue Wang and Ernestas Monkevicius &nbsp 
+
+                <button type="button" class="btn btn-danger btn-md" data-toggle="collapse" data-target="#visualizationControl" id="mainVisualizationDisplayButton"><p>Hide Main Visualisation</p></button>
+
+            </a>
+          </div>
+    </nav>
+
     <div class="container">
-        <div class="jumbotron">
-            <h1>Channeling Hans</h1>
-            <h3 id="hans"><!-- Error message goes here--></h3>
-            <p>by Jonathan Leon, Xinyue Wang and Ernestas Monkevicius</p>
-            <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#queryControl">Learn More</button>
-            <br/>
-            <div id="queryControl" class="collapse">
-                <br/>
-                <p>
-                    Hans Rosling is a data visualisation legend. His 2006 TED talk, "The Best Stats	
-                    You’ve Ever Seen", is one of the most viewed videos on the TED website.
-                </p>
-                <p>
-                    In this	assignment, Jonathan Leon, Xinyue Wang and Ernestas Monkevicius have been tasked to create	
-                    an information visualisations that is an homage	to Hans	Rosling. The result may be viewed below.
-                </p>
-            </div>
-        </div>
+        <p id="hans"><!-- Error message goes here--></p>
 
         <div class="row">
-            <div class="col-xs-2">
-                <h3 id="year_header" style="margin-top: 0;">Year: 2007</h3>
-            </div>
-            <div class="col-xs-10">
-                <!-- Space -->
-            </div>
-        </div>
-        <div class="row">
             <div class="col-xs-12">
-                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#visualizationControl" id="mainVisualizationDisplayButton"><p>Show Main Visualisation</p></button>
-                <br/>
-                <div id="visualizationControl" class="collapse">
+                <div id="visualizationControl" class="collapse in">
                     <br/>
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-xs-4">
+                            <h3 id="year_header" style="margin-top: 0;">Year: 2007</h3>
+                        </div>
+                        <div class="col-xs-8">
                             <!-- Split button for choosing country and showing it's trace -->
                             <input list="countryDropDown" name="browser" id="countryDropDownInput" placeholder="Select Country Here">
                             <datalist id="countryDropDown">
@@ -293,7 +281,7 @@
         });
 
         //initial state of the visualization display
-        let showingMainVisualization = false;
+        let showingMainVisualization = true;
         //assigning callbacks to button
         $( "#mainVisualizationDisplayButton" ).on( "click", function() {
             //let rows = $('#...').val();
