@@ -23,14 +23,18 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.core.js"></script>
 </head>
 
 <!-- Jonathan and Ernestas body Bootstrap START -->
 <body style="background-color: aliceblue">
 
+    <!-- NOTE: Many of the bootstrap components used in this assignment are adaptions from: https://getbootstrap.com/docs/3.3/components/ -->
+
     <div class="container">
         <div class="jumbotron">
             <h1>Channeling Hans</h1>
+            <h3 id="hans"><!-- Error message goes here--></h3>
             <p>by Jonathan Leon, Xinyue Wang and Ernestas Monkevicius</p>
             <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#queryControl">Learn More</button>
             <br/>
@@ -48,18 +52,39 @@
         </div>
 
         <div class="row">
-            <!-- <div class="col-xs-12">
-                <h1 id="hans">Channeling Hans</h1>
-            </div> -->
-            <div class="col-xs-12">
-                    <h3 id="year_header">Year: 2007</h3>
+            <div class="col-xs-2">
+                <h3 id="year_header" style="margin-top: 0;">Year: 2007</h3>
+            </div>
+            <div class="col-xs-10">
+                <!-- Space -->
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <h2 id="g1"></h2>
+                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#visualizationControl" id="mainVisualizationDisplayButton"><p>Show Main Visualisation</p></button>
+                <br/>
+                <div id="visualizationControl" class="collapse">
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <!-- Split button for choosing country and showing it's trace -->
+                            <input list="countryDropDown" name="browser" id="countryDropDownInput" placeholder="Select Country Here">
+                            <datalist id="countryDropDown">
+                                <!-- list items indicating countries will be inserted here after reading in data from .csv -->
+                                <!--e.g. <option value="Ireland"> -->
+                                <!--e.g. <option value="Ireland"> -->
+                            </datalist>
+                        
+                            <button type="button" class="btn btn-primary" id="showTraceButton"><span>Show Trace</span></button>
+                            <button class="btn btn-info" data-toggle="popover" title="Show Trace on the Main Visualisation" data-content="Show each of the historic positions of the selected country from 2007 to the currently displayed year on the graph." data-placement="top" data-trigger="focus">?</button>
+                        </div>
+                    </div>
+
+                    <h2 id="g1"></h2>
+                </div>
             </div>
         </div>
+        <br/>
         <div class="row">
             <div class="col-xs-2">
                 <button type="button" class="btn btn-success" id="playPauseButton"><span class="glyphicon glyphicon-play"></span><br/><p>Play</p></button>
@@ -119,10 +144,59 @@
                 <br/>
             </div>
         </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#gciVisualizationControl" id="gciVisualizationDisplayButton"><p>Show Pillars of Global Competitiveness Index (GCI)</p></button>
+                <br/>
+                <div id="gciVisualizationControl" class="collapse">
+                    <!-- Second visualization will go here-->
+                    <h2 id="g2"></h2> 
+
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4>You may view the 12 pillars of Global Competitiveness Index (GCI) of one or two countries. If two countries are
+                                viewed simulatnously, their GCI values will be directly compared against each others.
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <input list="countryDropDown" name="browser" id="countryDropDownInputLeft" placeholder="Select Country One">
+                            <datalist id="countryDropDown">
+                                <!-- list items indicating countries will be inserted here after reading in data from .csv -->
+                                <!--e.g. <option value="Ireland"> -->
+                                <!--e.g. <option value="Ireland"> -->
+                            </datalist>
+                        
+                            <button type="button" class="btn btn-primary" id="showPillarsButtonLeft"><span>View</span></button>
+                            <button class="btn btn-info" data-toggle="popover" title="Pillars of the Global	Competitiveness Index (GCI)" data-content="View the 12 pillars of the GCI for the selected country." data-placement="top" data-trigger="focus">?</button>                
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input list="countryDropDown" name="browser" id="countryDropDownInputRight" placeholder="Select Country Two">
+                            <datalist id="countryDropDown">
+                                <!-- list items indicating countries will be inserted here after reading in data from .csv -->
+                                <!--e.g. <option value="Ireland"> -->
+                                <!--e.g. <option value="Ireland"> -->
+                            </datalist>
+                        
+                            <button type="button" class="btn btn-primary" id="showPillarsButtonRight"><span>View</span></button>
+                            <button class="btn btn-info" data-toggle="popover" title="Pillars of the Global	Competitiveness Index (GCI)" data-content="View the 12 pillars of the GCI for the selected country." data-placement="top" data-trigger="focus">?</button>                
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- Jonathan and Ernestas body Bootstrap END -->
 
     <script>
+        //Initialize the tooltips
+        $(document).ready(function(){
+            $('[data-toggle="popover"]').popover();
+        });
+
         //initial state of the visualization animation
         let playing = false;
         //assigning callbacks to play/pause button
@@ -138,7 +212,106 @@
                 $( '#playPauseButton span' ).addClass('glyphicon-play').removeClass('glyphicon-pause');
                 $( '#playPauseButton p' ).text("Play");
             }
-            console.log("Button state:: is playing? "+playing); //TESTING
+            console.log("Play/Pause Button state:: is playing? "+playing); //TESTING
+        });
+
+        let showingTrace = false;
+        //assign callback to show trace button
+        $( "#showTraceButton" ).on( "click", function() {
+            let country = $('#countryDropDownInput').val();
+
+            //if not input, just return
+            if (country == "") {
+                return;
+            }
+
+            showingTrace = !showingTrace;
+            if (showingTrace) {
+                $( '#showTraceButton' ).addClass('btn-danger').removeClass('btn-primary');
+                $( '#showTraceButton span' ).text("Hide Trace");
+
+                //showTrace(country, true); //Show the trace for a country
+
+            } else {
+                $( '#showTraceButton' ).addClass('btn-primary').removeClass('btn-danger');
+                $( '#showTraceButton span' ).text("Show Trace");
+
+                //showTrace(country, false); //Hide the trace for a country
+
+            }
+            
+            //console.log("Show Trace Button state:: is showing trace? "+showingTrace); //TESTING
+        });
+
+        //initial state of the visualization display
+        let showingMainVisualization = false;
+        //assigning callbacks to button
+        $( "#mainVisualizationDisplayButton" ).on( "click", function() {
+            //let rows = $('#...').val();
+            showingMainVisualization = !showingMainVisualization;
+            if (showingMainVisualization) {
+                $( '#mainVisualizationDisplayButton' ).addClass('btn-danger').removeClass('btn-success');
+                $( '#mainVisualizationDisplayButton p' ).text("Hide Main Visualisation");
+            } else {
+                $( '#mainVisualizationDisplayButton' ).addClass('btn-success').removeClass('btn-danger');
+                $( '#mainVisualizationDisplayButton p' ).text("Show Main Visualisation");
+            }
+            console.log("Show Visualization Button state:: is showing? "+showingMainVisualization); //TESTING
+        });
+
+        //initial state of the visualization display
+        let showingGCIVisualization = false;
+        //assigning callbacks to button
+        $( "#gciVisualizationDisplayButton" ).on( "click", function() {
+            //let rows = $('#...').val();
+            showingGCIVisualization = !showingGCIVisualization;
+            if (showingGCIVisualization) {
+                $( '#gciVisualizationDisplayButton' ).addClass('btn-danger').removeClass('btn-success');
+                $( '#gciVisualizationDisplayButton p' ).text("Hide Pillars of Global Competitiveness Index (GCI)");
+            } else {
+                $( '#gciVisualizationDisplayButton' ).addClass('btn-success').removeClass('btn-danger');
+                $( '#gciVisualizationDisplayButton p' ).text("Show Pillars of Global Competitiveness Index (GCI)");
+            }
+            console.log("Show GCI Visualization Button state:: is showing? "+showingGCIVisualization); //TESTING
+        });
+
+
+        let showPillarsButtonLeftClicked = false;
+        let showPillarsButtonRightClicked = false;
+        //assign callback to button
+        $( "#showPillarsButtonLeft" ).on( "click", function() {
+            //after first click always true as there's no way to "clear" a visualization
+            showPillarsButtonLeftClicked = true;
+            let comparing = showPillarsButtonRightClicked; //both left and right view buttons have been clicked...
+
+            let country = $('#countryDropDownInputLeft').val();
+
+            //if not input, just return
+            if (country == "") {
+                return;
+            }
+
+            //showGCIpillars(country, comparing); //Show the GCI pillars for this country and compare with other if needed
+            
+            console.log("showPillarsButtonLeft:: is showing trace? "+country); //TESTING
+        });
+
+        //assign callback to button
+        $( "#showPillarsButtonRight" ).on( "click", function() {
+            //after first click always true as there's no way to "clear" a visualization
+            showPillarsButtonRightClicked = true;
+            let comparing = showPillarsButtonLeftClicked; //both left and right view buttons have been clicked...
+
+            let country = $('#countryDropDownInputRight').val();
+
+            //if not input, just return
+            if (country == "") {
+                return;
+            }
+
+            //showGCIpillars(country, comparing); //Show the GCI pillars for this country and compare with other if needed
+
+            console.log("showPillarsButtonRight:: is showing trace? "+country); //TESTING
         });
 
          // The year to display
@@ -168,16 +341,26 @@
             return (value.Year == display_year)
         }
 
-        //Create SVG element as a group with the margins transform applied to it
+        //Create Main SVG element as a group with the margins transform applied to it
         var svg = d3.select("#g1")
-            .append("svg")
-            .attr("width", svg_width + margin.left + margin.right)
-            .attr("height", svg_height + margin.top + margin.bottom)
-            .style("background", "white")
-            //.style("width", "80vw")
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        //.style("fill", "white");
+                    .append("svg")
+                    .attr("width", svg_width + margin.left + margin.right)
+                    .attr("height", svg_height + margin.top + margin.bottom)
+                    .style("background", "white")
+                    //.style("width", "80vw")
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                //.style("fill", "white");
+
+        //Create GCI SVG element as a group with the margins transform applied to it
+        var svgCGI = d3.select("#g2")
+                        .append("svg")
+                        .attr("width", svg_width + margin.left + margin.right)
+                        .attr("height", svg_height + margin.top + margin.bottom)
+                        .style("background", "white")
+                        //.style("width", "80vw")
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         //Add legend frame
         // var legend_margin = { top: 10, right: 10, bottom: 10, left: 10 };
@@ -480,7 +663,7 @@
         }, function (error) {
             console.log("Error Loading data!");
             console.log(error);
-            document.getElementById("hans").innerHTML += "<span style=\"color: red;\"> Error Loading Data! Please check that "+file+" is present in the same directory as this html file.</span>";
+            document.getElementById("hans").innerHTML += "<br/><span style=\"color: red;\"> Error Loading Data! Please check that "+file+" is present in the same directory as this html file. <br/><br/> The "+file+" was included with the submission of this assignmnet.<br/><br/> Please note that GCI_CompleteData2.csv may NOT be used! <br/><br/> Both "+file+" and GCI_CompleteData2.csv have the same contents, however the rows in "+file+" have been order based on country population and this visualization relies on this ordering.</span>";
         });
 
         function handleData(dataset){
@@ -491,6 +674,9 @@
 
             // Generate the visualisation
             generateVis(dataset);
+
+            //Populate the country drop down
+            populateCountryTraceDropdown(dataset);
 
             // Iterate through our avilable years.
 
@@ -511,6 +697,22 @@
             }, 2000);
         }
         //-- Ernestas and Jonathan File Loading END --//
+
+        function populateCountryTraceDropdown(data){
+            let countrySet = new Set();
+
+            _.forEach(data, function(row){
+                countrySet.add(row.Country); //Add each country to a set
+            });
+
+            for (let country of countrySet) {
+                let countryDropDownUL = document.getElementById("countryDropDown");
+                let option = document.createElement('option')
+                option.setAttribute("value", country);
+
+                countryDropDownUL.appendChild(option);
+            };
+        }
 
     </script>
 </body>
