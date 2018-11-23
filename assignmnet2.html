@@ -32,29 +32,35 @@
 </head>
 
 <!-- Jonathan and Ernestas body Bootstrap START -->
+
 <body style="background-color: aliceblue">
 
     <!-- NOTE: Many of the bootstrap components used in this assignment are adaptions from: https://getbootstrap.com/docs/3.3/components/ -->
 
     <nav class="navbar navbar-default">
         <div class="container-fluid">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="#" style="font-size: 14px;">
-                <b>Channeling Hans </b> by Jonathan Leon, Xinyue Wang and Ernestas Monkevicius &nbsp 
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#" style="font-size: 14px;">
+                    <b>Channeling Hans </b> by Jonathan Leon, Xinyue Wang and Ernestas Monkevicius &nbsp
 
-                <button type="button" class="btn btn-danger btn-md" data-toggle="collapse" data-target="#visualizationControl" id="mainVisualizationDisplayButton"><p>Hide Main Visualisation</p></button>
+                    <button type="button" class="btn btn-danger btn-md" data-toggle="collapse" data-target="#visualizationControl"
+                        id="mainVisualizationDisplayButton">
+                        <p>Hide Main Visualisation</p>
+                    </button>
 
-            </a>
-          </div>
+                </a>
+            </div>
     </nav>
 
     <div class="container">
-        <p id="hans"><!-- Error message goes here--></p>
+        <p id="hans">
+            <!-- Error message goes here-->
+        </p>
 
         <div class="row">
             <div class="col-xs-12">
                 <div id="visualizationControl" class="collapse in">
-                    <br/>
+                    <br />
                     <div class="row">
                         <div class="col-xs-4">
                             <h3 id="year_header" style="margin-top: 0;">Year: 2007</h3>
@@ -67,9 +73,11 @@
                                 <!--e.g. <option value="Ireland"> -->
                                 <!--e.g. <option value="Ireland"> -->
                             </datalist>
-                        
+
                             <button type="button" class="btn btn-primary" id="showTraceButton"><span>Show Trace</span></button>
-                            <button class="btn btn-info" data-toggle="popover" title="Show Trace on the Main Visualisation" data-content="Show each of the historic positions of the selected country from 2007 to the currently displayed year on the graph." data-placement="top" data-trigger="focus">?</button>
+                            <button class="btn btn-info" data-toggle="popover" title="Show Trace on the Main Visualisation"
+                                data-content="Show each of the historic positions of the selected country from 2007 to the currently displayed year on the graph."
+                                data-placement="top" data-trigger="focus">?</button>
                         </div>
                     </div>
 
@@ -77,10 +85,12 @@
                 </div>
             </div>
         </div>
-        <br/>
+        <br />
         <div class="row">
             <div class="col-xs-2">
-                <button type="button" class="btn btn-success" id="playPauseButton"><span class="glyphicon glyphicon-play"></span><br/><p>Play</p></button>
+                <button type="button" class="btn btn-success" id="playPauseButton"><span class="glyphicon glyphicon-play"></span><br />
+                    <p>Play</p>
+                </button>
             </div>
             <div class="col-xs-10">
                 <div class="row">
@@ -134,21 +144,25 @@
                         </div>
                     </div>
                 </div>
-                <br/>
+                <br />
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#gciVisualizationControl" id="gciVisualizationDisplayButton"><p>Show Pillars of Global Competitiveness Index (GCI)</p></button>
-                <br/>
+                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#gciVisualizationControl"
+                    id="gciVisualizationDisplayButton">
+                    <p>Show Pillars of Global Competitiveness Index (GCI)</p>
+                </button>
+                <br />
                 <div id="gciVisualizationControl" class="collapse">
                     <!-- Second visualization will go here-->
-                    <h2 id="g2"></h2> 
+                    <h2 id="g2"></h2>
 
-                    <br/>
+                    <br />
                     <div class="row">
                         <div class="col-xs-12">
-                            <h4>You may view the 12 pillars of Global Competitiveness Index (GCI) of one or two countries. If two countries are
+                            <h4>You may view the 12 pillars of Global Competitiveness Index (GCI) of one or two
+                                countries. If two countries are
                                 viewed simulatnously, their GCI values will be directly compared against each others.
                             </h4>
                         </div>
@@ -161,9 +175,11 @@
                                 <!--e.g. <option value="Ireland"> -->
                                 <!--e.g. <option value="Ireland"> -->
                             </datalist>
-                        
+
                             <button type="button" class="btn btn-primary" id="showPillarsButtonLeft"><span>View</span></button>
-                            <button class="btn btn-info" data-toggle="popover" title="Pillars of the Global	Competitiveness Index (GCI)" data-content="View the 12 pillars of the GCI for the selected country." data-placement="top" data-trigger="focus">?</button>                
+                            <button class="btn btn-info" data-toggle="popover" title="Pillars of the Global	Competitiveness Index (GCI)"
+                                data-content="View the 12 pillars of the GCI for the selected country." data-placement="top"
+                                data-trigger="focus">?</button>
                         </div>
 
                         <div class="col-xs-6">
@@ -173,9 +189,11 @@
                                 <!--e.g. <option value="Ireland"> -->
                                 <!--e.g. <option value="Ireland"> -->
                             </datalist>
-                        
+
                             <button type="button" class="btn btn-primary" id="showPillarsButtonRight"><span>View</span></button>
-                            <button class="btn btn-info" data-toggle="popover" title="Pillars of the Global	Competitiveness Index (GCI)" data-content="View the 12 pillars of the GCI for the selected country." data-placement="top" data-trigger="focus">?</button>                
+                            <button class="btn btn-info" data-toggle="popover" title="Pillars of the Global	Competitiveness Index (GCI)"
+                                data-content="View the 12 pillars of the GCI for the selected country." data-placement="top"
+                                data-trigger="focus">?</button>
                         </div>
                     </div>
                 </div>
@@ -186,25 +204,25 @@
 
     <script>
         //Initialize the tooltips
-        $(document).ready(function(){
+        $(document).ready(function () {
             $('[data-toggle="popover"]').popover();
         });
 
         //initial state of the visualization animation
         let playing = false;
         //assigning callbacks to play/pause button
-        $( "#playPauseButton" ).on( "click", function() {
+        $("#playPauseButton").on("click", function () {
             //let rows = $('#...').val();
             playing = !playing;
             if (playing) {
-                $( '#playPauseButton' ).addClass('btn-danger').removeClass('btn-success');
-                $( '#playPauseButton span' ).addClass('glyphicon-pause').removeClass('glyphicon-play');
-                $( '#playPauseButton p' ).text("Pause");
+                $('#playPauseButton').addClass('btn-danger').removeClass('btn-success');
+                $('#playPauseButton span').addClass('glyphicon-pause').removeClass('glyphicon-play');
+                $('#playPauseButton p').text("Pause");
                 // if (showingTrace) leaveTrace
             } else {
-                $( '#playPauseButton' ).addClass('btn-success').removeClass('btn-danger');
-                $( '#playPauseButton span' ).addClass('glyphicon-play').removeClass('glyphicon-pause');
-                $( '#playPauseButton p' ).text("Play");
+                $('#playPauseButton').addClass('btn-success').removeClass('btn-danger');
+                $('#playPauseButton span').addClass('glyphicon-play').removeClass('glyphicon-pause');
+                $('#playPauseButton p').text("Play");
             }
             // console.log("Play/Pause Button state:: is playing? "+playing); //TESTING
         });
@@ -213,49 +231,28 @@
         // ==================================================================
         // Helper functions that makes a country circle outstanding....or not!
         // ==================================================================
-        function outstandACountry (country) {
+       /* function outstandACountry(country) {
             svg.selectAll("circle")
-            .transition().duration(1000).ease(d3.easeLinear).style("opacity", .1);
-            svg.select("#"+country)
-            .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
+                .transition().duration(1000).ease(d3.easeLinear).style("opacity", .1);
+            svg.select("#" + country)
+                .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
         };
 
-        function AllCountryLookTheSame (country) {
+        function AllCountryLookTheSame(country) {
             svg.selectAll("circle")
-            .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
+                .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
             // svg.select("#"+country)
             // .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
-        };
-
-        // function leaveTrace (country) {
-        //     svg.append("circle")
-        //     .attr("cx", function (d) {
-        //             return d.GDP ? xScale(+d.GDP) : margin.left;
-        //         })
-        //         .attr("cy", function (d) {
-        //             return d.Global_Competitiveness_Index ? yScale(+d.Global_Competitiveness_Index) : svg_height;
-        //         })
-        //         .attr("r", function (d) {
-        //             //Divide 90000 since the smallest country's population is so.
-        //             if (d.Population) {
-        //                 let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
-        //                 return circleArea;
-        //             } else return 0;
-        //         })
-        //         .style("fill", function (d) {
-        //             return d.Global_Competitiveness_Index ? "green" : "orange";
-        //         })
-        //         .style("stroke", "black")
-        //         ;
-        // }
+        }; */
 
         // ===========================
         // Drop down box to show trace
         // ===========================
         var showingTrace = false;
+        var country = "";
         //assign callback to show trace button
-        $( "#showTraceButton" ).on( "click", function() {
-            let country = $('#countryDropDownInput').val();
+        $("#showTraceButton").on("click", function () {
+            country = $('#countryDropDownInput').val();
 
             //if not input, just return
             if (country == "") {
@@ -264,59 +261,66 @@
 
             showingTrace = !showingTrace;
             if (showingTrace) {
-                $( '#showTraceButton' ).addClass('btn-danger').removeClass('btn-primary');
-                $( '#showTraceButton span' ).text("Hide Trace");
-                outstandACountry(country);
+                $('#showTraceButton').addClass('btn-danger').removeClass('btn-primary');
+                $('#showTraceButton span').text("Hide Trace");
+
+                generateVis(dataset, false);
+                //outstandACountry(country);
+
                 // leaveTrace(country);
 
             } else {
-                $( '#showTraceButton' ).addClass('btn-primary').removeClass('btn-danger');
-                $( '#showTraceButton span' ).text("Show Trace");
-                AllCountryLookTheSame(country);
+                $('#showTraceButton').addClass('btn-primary').removeClass('btn-danger');
+                $('#showTraceButton span').text("Show Trace");
+
+                generateVis(dataset, false);
+
+                //AllCountryLookTheSame(country);
+
                 //showTrace(country, showingTrace); //Hide the trace for a country
 
             }
-            
+
             //console.log("Show Trace Button state:: is showing trace? "+showingTrace); //TESTING
         });
 
         //initial state of the visualization display
         let showingMainVisualization = true;
         //assigning callbacks to button
-        $( "#mainVisualizationDisplayButton" ).on( "click", function() {
+        $("#mainVisualizationDisplayButton").on("click", function () {
             //let rows = $('#...').val();
             showingMainVisualization = !showingMainVisualization;
             if (showingMainVisualization) {
-                $( '#mainVisualizationDisplayButton' ).addClass('btn-danger').removeClass('btn-success');
-                $( '#mainVisualizationDisplayButton p' ).text("Hide Main Visualisation");
+                $('#mainVisualizationDisplayButton').addClass('btn-danger').removeClass('btn-success');
+                $('#mainVisualizationDisplayButton p').text("Hide Main Visualisation");
             } else {
-                $( '#mainVisualizationDisplayButton' ).addClass('btn-success').removeClass('btn-danger');
-                $( '#mainVisualizationDisplayButton p' ).text("Show Main Visualisation");
+                $('#mainVisualizationDisplayButton').addClass('btn-success').removeClass('btn-danger');
+                $('#mainVisualizationDisplayButton p').text("Show Main Visualisation");
             }
-            console.log("Show Visualization Button state:: is showing? "+showingMainVisualization); //TESTING
+            console.log("Show Visualization Button state:: is showing? " + showingMainVisualization); //TESTING
         });
 
         //initial state of the visualization display
         let showingGCIVisualization = false;
         //assigning callbacks to button
-        $( "#gciVisualizationDisplayButton" ).on( "click", function() {
+        $("#gciVisualizationDisplayButton").on("click", function () {
             //let rows = $('#...').val();
             showingGCIVisualization = !showingGCIVisualization;
             if (showingGCIVisualization) {
-                $( '#gciVisualizationDisplayButton' ).addClass('btn-danger').removeClass('btn-success');
-                $( '#gciVisualizationDisplayButton p' ).text("Hide Pillars of Global Competitiveness Index (GCI)");
+                $('#gciVisualizationDisplayButton').addClass('btn-danger').removeClass('btn-success');
+                $('#gciVisualizationDisplayButton p').text("Hide Pillars of Global Competitiveness Index (GCI)");
             } else {
-                $( '#gciVisualizationDisplayButton' ).addClass('btn-success').removeClass('btn-danger');
-                $( '#gciVisualizationDisplayButton p' ).text("Show Pillars of Global Competitiveness Index (GCI)");
+                $('#gciVisualizationDisplayButton').addClass('btn-success').removeClass('btn-danger');
+                $('#gciVisualizationDisplayButton p').text("Show Pillars of Global Competitiveness Index (GCI)");
             }
-            console.log("Show GCI Visualization Button state:: is showing? "+showingGCIVisualization); //TESTING
+            console.log("Show GCI Visualization Button state:: is showing? " + showingGCIVisualization); //TESTING
         });
 
 
         let showPillarsButtonLeftClicked = false;
         let showPillarsButtonRightClicked = false;
         //assign callback to button
-        $( "#showPillarsButtonLeft" ).on( "click", function() {
+        $("#showPillarsButtonLeft").on("click", function () {
             //after first click always true as there's no way to "clear" a visualization
             showPillarsButtonLeftClicked = true;
             let comparing = showPillarsButtonRightClicked; //both left and right view buttons have been clicked...
@@ -329,12 +333,12 @@
             }
 
             //showGCIpillars(country, comparing); //Show the GCI pillars for this country and compare with other if needed
-            
-            console.log("showPillarsButtonLeft:: is showing trace? "+country); //TESTING
+
+            console.log("showPillarsButtonLeft:: is showing trace? " + country); //TESTING
         });
 
         //assign callback to button
-        $( "#showPillarsButtonRight" ).on( "click", function() {
+        $("#showPillarsButtonRight").on("click", function () {
             //after first click always true as there's no way to "clear" a visualization
             showPillarsButtonRightClicked = true;
             let comparing = showPillarsButtonLeftClicked; //both left and right view buttons have been clicked...
@@ -348,15 +352,15 @@
 
             //showGCIpillars(country, comparing); //Show the GCI pillars for this country and compare with other if needed
 
-            console.log("showPillarsButtonRight:: is showing trace? "+country); //TESTING
+            console.log("showPillarsButtonRight:: is showing trace? " + country); //TESTING
         });
 
-         // The year to display
+        // The year to display
         let display_year = 2007;
         let dataset = {};
 
-        document.getElementById("yearSlider").oninput = function() {
-            console.log("Year Slider:: value -> "+this.value); //TESTING
+        document.getElementById("yearSlider").oninput = function () {
+            console.log("Year Slider:: value -> " + this.value); //TESTING
             display_year = +this.value;
             generateVis(dataset);
         };
@@ -378,26 +382,31 @@
             return (value.Year == display_year)
         }
 
+        //country to filter for
+        function countryAndYearFilter(value) {
+            return value.Country == country && value.Year <= display_year;
+        };
+
         //Create Main SVG element as a group with the margins transform applied to it
         var svg = d3.select("#g1")
-                    .append("svg")
-                    .attr("width", svg_width + margin.left + margin.right)
-                    .attr("height", svg_height + margin.top + margin.bottom)
-                    .style("background", "white")
-                    //.style("width", "80vw")
-                    .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-                //.style("fill", "white");
+            .append("svg")
+            .attr("width", svg_width + margin.left + margin.right)
+            .attr("height", svg_height + margin.top + margin.bottom)
+            .style("background", "white")
+            //.style("width", "80vw")
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        //.style("fill", "white");
 
         //Create GCI SVG element as a group with the margins transform applied to it
         var svgCGI = d3.select("#g2")
-                        .append("svg")
-                        .attr("width", svg_width + margin.left + margin.right)
-                        .attr("height", svg_height + margin.top + margin.bottom)
-                        .style("background", "white")
-                        //.style("width", "80vw")
-                        .append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .append("svg")
+            .attr("width", svg_width + margin.left + margin.right)
+            .attr("height", svg_height + margin.top + margin.bottom)
+            .style("background", "white")
+            //.style("width", "80vw")
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
         //-- Wang and Ernestas Main Graph Axes START --//
@@ -465,10 +474,19 @@
 
         // Define a fucntion to draw a simple bar chart
         //-- Wang and Ernestas Main Graph START --//
-        function generateVis(data) {
+        function generateVis(data, advanceTime = false) {
+            //advance the time forward and set the year label
+            if (advanceTime){
+                if (display_year+1 > 2017) {
+                    display_year = 2007;
+                } else {
+                    display_year = display_year + 1;
+                }
+            }
 
             // Filter the data to only include the current year
             var filtered_datset = data.filter(yearFilter);
+            // var filtered_datset = data; //no filter
 
             // Update the domain of the x scale
             //xScale.domain(filtered_datset.map(function(d) { return d.Company; }));
@@ -512,51 +530,70 @@
                     return d.Global_Competitiveness_Index ? "green" : "orange";
                 })
                 .style("stroke", "black")
-                ;
+                .style("opacity", function(d){
+                    if(showingTrace){
+                        return d.Country == country ? 1 : .1;
+                    } else {
+                        return 1;
+                    }
+                });
 
 
             // =======================
             // If showingTrace = True;
             // =======================
-            function countryFilter(value) {
-                return value.country == country;
-            }
+                /*
+            let showingTrace = false; //disable temporarily TESTING
+            if (showingTrace) {
 
-            if (showingTrace){
                 // console.log("Showing TRue!!")
-                let country = $('#countryDropDownInput').val();
-                selectedCountryInfo = filtered_datset.filter(countryFilter);
-                console.log(selectedCountryInfo);
-                svg.select("#"+country)
-                .append("circle")
-                .attr("cx", function (d) {
-                    // console.log(d.GDP);
-                    return d.GDP ? xScale(+d.GDP) : margin.left;
-                })
-                .attr("cy", function (d) {
-                    return d.Global_Competitiveness_Index ? yScale(+d.Global_Competitiveness_Index) : svg_height;
-                })
-                .attr("r", function (d) {
-                    //Divide 90000 since the smallest country's population is so.
-                    if (d.Population) {
-                        let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
-                        return circleArea;
-                    } else return 0;
-                })
-                .style("fill", function (d) {
-                    return d.Global_Competitiveness_Index ? "green" : "orange";
-                })
-                .style("stroke", "black")
-                ;
-            }
+                country = $('#countryDropDownInput').val();
+                // console.log("country"+country);
+                var selectedCountryInfo = data.filter(countryAndYearFilter);
+                // var cx = selectedCountryInfo[0].GDP ? xScale(+selectedCountryInfo[0].GDP) : margin.left;
+                // // console.log(cx);
+                // var cy = selectedCountryInfo[0].Global_Competitiveness_Index ? yScale(+selectedCountryInfo[0].Global_Competitiveness_Index) : svg_height;
+                // var r = 
+                // console.log(selectedCountryInfo);
 
+                var pointsTrace = svg.selectAll("circle")// + display_year)
+                    .data(selectedCountryInfo, function key(d) {
+                        return d.Country;
+                    });
+
+                var enterTrace = pointsTrace.enter()
+                    .append("circle")
+                    .attr("id", function (d) {
+                        return d.Country;
+                    })
+                    .attr("cx", function (d) {
+                        // console.log(d.GDP);
+                        return d.GDP ? xScale(+d.GDP) : margin.left;
+                    })
+                    .attr("cy", function (d) {
+                        return d.Global_Competitiveness_Index ? yScale(+d.Global_Competitiveness_Index) : svg_height;
+                    })
+                    .attr("r", function (d) {
+                        //Divide 90000 since the smallest country's population is so.
+                        if (d.Population) {
+                            let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
+                            return circleArea;
+                        } else return 0;
+                    })
+                    .style("fill", function (d) {
+                        return d.Global_Competitiveness_Index ? "green" : "orange";
+                    })
+                    .style("stroke", "black")
+                    ;
+            }
+*/
 
             /******** HANDLE ENTER SELECTION ************/
             // Create new elements in the dataset
             // Perform a data join and add points to the chart
             var enter = points.enter()
                 .append("circle")
-                .attr("id", function(d) {
+                .attr("id", function (d) {
                     return d.Country;
                 })
                 .attr("cx", function (d) {
@@ -578,6 +615,13 @@
                     div.transition()
                         .duration(500)
                         .style("opacity", 0);
+                })
+                .style("opacity", function(d){
+                    if(showingTrace){
+                        return d.Country == country ? 1 : .1;
+                    } else {
+                        return 1;
+                    }
                 });
 
             enter.transition()
@@ -593,7 +637,6 @@
                     return d.Global_Competitiveness_Index ? "blue" : "orange";
                 })
                 .style("stroke", "black");
-            //.attr("r", 6);
 
 
 
@@ -606,9 +649,7 @@
                 .attr("r", 0)
                 .remove();
 
-            // Set the year label
             d3.select("#year_header").text("Year: " + display_year);
-
         }
         //-- Wang and Ernestas Main Graph END --//
 
@@ -616,81 +657,81 @@
         //-- Jonathan and Wang Graph Legend START --//
         //Add legend frame
         var legend_margin = { top: 10, right: 10, bottom: 10, left: 10 };
-        var rect_width = svg_width*0.2;
-        var rect_height = svg_height*.2;
+        var rect_width = svg_width * 0.2;
+        var rect_height = svg_height * .2;
         var gap = 10;
         svg.append("rect")
-        .attr("x", svg_width-rect_width)
-        .attr("y", 0)
-        .attr("width", rect_width)
-        .attr("height", rect_height)
-        .style("fill", "lightsteelblue")
-        .style("opacity",.9)
-        ;
+            .attr("x", svg_width - rect_width)
+            .attr("y", 0)
+            .attr("width", rect_width)
+            .attr("height", rect_height)
+            .style("fill", "lightsteelblue")
+            .style("opacity", .9)
+            ;
 
         //Add legend rects and Text
-        var legend_circle_r = svg_width*0.01;
+        var legend_circle_r = svg_width * 0.01;
         svg.append("rect")
-        .attr("id","blue")
-        .attr("x", svg_width-rect_width+legend_margin.left)
-        .attr("y", legend_margin.top)
-        .attr("width", legend_circle_r)
-        .attr("height", legend_circle_r)
-        .style("fill", "blue")
-        ;
+            .attr("id", "blue")
+            .attr("x", svg_width - rect_width + legend_margin.left)
+            .attr("y", legend_margin.top)
+            .attr("width", legend_circle_r)
+            .attr("height", legend_circle_r)
+            .style("fill", "blue")
+            ;
 
         svg.append("rect")
-        // .attr("id","blue")
-        .attr("x", svg_width-rect_width+legend_margin.left)
-        .attr("y", legend_margin.top+gap+legend_circle_r)
-        .attr("width", legend_circle_r)
-        .attr("height", legend_circle_r)
-        .style("fill", "green")
-        ;
+            // .attr("id","blue")
+            .attr("x", svg_width - rect_width + legend_margin.left)
+            .attr("y", legend_margin.top + gap + legend_circle_r)
+            .attr("width", legend_circle_r)
+            .attr("height", legend_circle_r)
+            .style("fill", "green")
+            ;
 
         svg.append("rect")
-        // .attr("id","blue")
-        .attr("x", svg_width-rect_width+legend_margin.left)
-        .attr("y", legend_margin.top+2*(gap+legend_circle_r))
-        .attr("width", legend_circle_r)
-        .attr("height", legend_circle_r)
-        .style("fill", "orange")
-        ;
+            // .attr("id","blue")
+            .attr("x", svg_width - rect_width + legend_margin.left)
+            .attr("y", legend_margin.top + 2 * (gap + legend_circle_r))
+            .attr("width", legend_circle_r)
+            .attr("height", legend_circle_r)
+            .style("fill", "orange")
+            ;
 
         svg.append("rect")
-        // .attr("id","blue")
-        .attr("x", svg_width-rect_width+legend_margin.left)
-        .attr("y", legend_margin.top+3*(gap+legend_circle_r))
-        .attr("width", legend_circle_r)
-        .attr("height", legend_circle_r)
-        .style("fill", "red")
-        ;
+            // .attr("id","blue")
+            .attr("x", svg_width - rect_width + legend_margin.left)
+            .attr("y", legend_margin.top + 3 * (gap + legend_circle_r))
+            .attr("width", legend_circle_r)
+            .attr("height", legend_circle_r)
+            .style("fill", "red")
+            ;
 
         svg.append("text")
-        .attr("transform",
-                "translate(" + (svg_width-rect_width+legend_margin.left+legend_circle_r+gap) + " ," +
-                (legend_margin.top+10) + ")")
+            .attr("transform",
+                "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+                (legend_margin.top + 10) + ")")
             // .style("text-anchor", "middle")
             .text("New Enter");
 
         svg.append("text")
-        .attr("transform",
-                "translate(" + (svg_width-rect_width+legend_margin.left+legend_circle_r+gap) + " ," +
-                (legend_margin.top+10+gap+legend_circle_r) + ")")
+            .attr("transform",
+                "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+                (legend_margin.top + 10 + gap + legend_circle_r) + ")")
             // .style("text-anchor", "middle")
             .text("Update");
 
         svg.append("text")
-        .attr("transform",
-                "translate(" + (svg_width-rect_width+legend_margin.left+legend_circle_r+gap) + " ," +
-                (legend_margin.top+2*(gap+legend_circle_r)+10) + ")")
+            .attr("transform",
+                "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+                (legend_margin.top + 2 * (gap + legend_circle_r) + 10) + ")")
             // .style("text-anchor", "middle")
             .text("Missing Value");
 
         svg.append("text")
-        .attr("transform",
-                "translate(" + (svg_width-rect_width+legend_margin.left+legend_circle_r+gap) + " ," +
-                (legend_margin.top+3*(gap+legend_circle_r)+10) + ")")
+            .attr("transform",
+                "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+                (legend_margin.top + 3 * (gap + legend_circle_r) + 10) + ")")
             // .style("text-anchor", "middle")
             .text("Exiting");
         //-- Jonathan and Wang Graph Legend END --//
@@ -706,10 +747,10 @@
         }, function (error) {
             console.log("Error Loading data!");
             console.log(error);
-            document.getElementById("hans").innerHTML += "<br/><span style=\"color: red;\"> Error Loading Data! Please check that "+file+" is present in the same directory as this html file. <br/><br/> The "+file+" was included with the submission of this assignmnet.<br/><br/> Please note that GCI_CompleteData2.csv may NOT be used! <br/><br/> Both "+file+" and GCI_CompleteData2.csv have the same contents, however the rows in "+file+" have been order based on country population and this visualization relies on this ordering.</span>";
+            document.getElementById("hans").innerHTML += "<br/><span style=\"color: red;\"> Error Loading Data! Please check that " + file + " is present in the same directory as this html file. <br/><br/> The " + file + " was included with the submission of this assignmnet.<br/><br/> Please note that GCI_CompleteData2.csv may NOT be used! <br/><br/> Both " + file + " and GCI_CompleteData2.csv have the same contents, however the rows in " + file + " have been order based on country population and this visualization relies on this ordering.</span>";
         });
 
-        function handleData(dataset){
+        function handleData(dataset) {
             // Update the domain of the x scale
             //xScale.domain(dataset.map(function(d) { return d.GDP; }));
             // Call the x-axis
@@ -728,23 +769,19 @@
             //since we want to control playback ourselves, we can't use setInterval()
             setInterval(function () {
 
-                if(playing){
-                    if (display_year > 2017) {
-                        display_year = 2007;
-                    }
-                    generateVis(dataset);
+                if (playing) {
+                    generateVis(dataset, true);
 
                     document.getElementById("yearSlider").value = display_year;
-                    display_year = display_year + 1;
                 }
             }, 2000);
         }
         //-- Ernestas and Jonathan File Loading END --//
 
-        function populateCountryTraceDropdown(data){
+        function populateCountryTraceDropdown(data) {
             let countrySet = new Set();
 
-            _.forEach(data, function(row){
+            _.forEach(data, function (row) {
                 countrySet.add(row.Country); //Add each country to a set
             });
 
