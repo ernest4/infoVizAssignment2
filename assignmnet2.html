@@ -229,24 +229,6 @@
             // console.log("Play/Pause Button state:: is playing? "+playing); //TESTING
         });
 
-
-        // ==================================================================
-        // Helper functions that makes a country circle outstanding....or not!
-        // ==================================================================
-        /* function outstandACountry(country) {
-             svg.selectAll("circle")
-                 .transition().duration(1000).ease(d3.easeLinear).style("opacity", .1);
-             svg.select("#" + country)
-                 .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
-         };
- 
-         function AllCountryLookTheSame(country) {
-             svg.selectAll("circle")
-                 .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
-             // svg.select("#"+country)
-             // .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
-         }; */
-
         // ===========================
         // Drop down box to show trace
         // ===========================
@@ -257,31 +239,18 @@
             country = $('#countryDropDownInput').val();
 
             //if not input, just return
-            if (country == "") {
-                return;
-            }
+            if (country == "" && !showingTrace) return;
 
             showingTrace = !showingTrace;
             if (showingTrace) {
                 $('#showTraceButton').addClass('btn-danger').removeClass('btn-primary');
                 $('#showTraceButton span').text("Hide Trace");
-
-                generateVis(dataset, false);
-                //outstandACountry(country);
-
-                // leaveTrace(country);
-
             } else {
                 $('#showTraceButton').addClass('btn-primary').removeClass('btn-danger');
                 $('#showTraceButton span').text("Show Trace");
-
-                generateVis(dataset, false);
-
-                //AllCountryLookTheSame(country);
-
-                //showTrace(country, showingTrace); //Hide the trace for a country
-
             }
+
+            generateVis(dataset, false);
 
             //console.log("Show Trace Button state:: is showing trace? "+showingTrace); //TESTING
         });
@@ -303,7 +272,7 @@
         });
 
         //initial state of the visualization display
-        // let showingGCIVisualization = false;
+        //let showingGCIVisualization = false;
         let showingGCIVisualization = true;
         //assigning callbacks to button
         $("#gciVisualizationDisplayButton").on("click", function () {
@@ -331,9 +300,7 @@
             let country = $('#countryDropDownInputLeft').val();
 
             //if not input, just return
-            if (country == "") {
-                return;
-            }
+            if (country == "") return;
 
             //showGCIpillars(country, comparing); //Show the GCI pillars for this country and compare with other if needed
 
@@ -349,9 +316,7 @@
             let country = $('#countryDropDownInputRight').val();
 
             //if not input, just return
-            if (country == "") {
-                return;
-            }
+            if (country == "") return;
 
             //showGCIpillars(country, comparing); //Show the GCI pillars for this country and compare with other if needed
 
@@ -361,11 +326,13 @@
         // The year to display
         let display_year = 2007;
         let dataset = {};
+        let reversedDataset = {};
 
         document.getElementById("yearSlider").oninput = function () {
             console.log("Year Slider:: value -> " + this.value); //TESTING
             display_year = +this.value;
-            generateVis(dataset);
+            generateVis(dataset, false);
+            generateVisForPillars(dataset);
         };
 
         //define input file
@@ -384,10 +351,14 @@
         function yearFilter(value) {
             return (value.Year == display_year)
         }
+        
+        function countryAndYearFilter0 (value) {
+            return yearFilter(value) && value.Country == country;
+        }
 
         //country to filter for
         function countryAndYearFilter(value) {
-            return value.Country == country && value.Year <= display_year;
+            return value.Country == country && +value.Year <= +display_year;
         };
 
         //Create Main SVG element as a group with the margins transform applied to it
@@ -417,15 +388,13 @@
         var yAxis = d3.axisLeft()
             .scale(yScale)
             .ticks(5)
-            .tickFormat(d3.format(".0s"))
-            ;
+            .tickFormat(d3.format(".0s"));
 
         // Create an x-axis connected to the x scale
         var xAxis = d3.axisBottom()
             .scale(xScale)
             // .tickFormat(d3.format(".0s"))
-            .ticks(10, ".0s")
-            ;
+            .ticks(10, ".0s");
 
         // Define the div for the tooltip
         var div = d3.select("body").append("div")
@@ -443,8 +412,7 @@
             .attr("class", "axis")
             .attr("id", "x-axis")
             .attr("transform", "translate(0," + svg_height + ")")
-            .call(xAxis)
-            ;
+            .call(xAxis);
 
         // text label for the x axis
         svg.append("text")
@@ -479,31 +447,26 @@
 
             // Filter the data to only include the current year
             var filtered_datset = data.filter(yearFilter);
-            // var filtered_datset = data; //no filter
-
-            // Update the domain of the x scale
-            //xScale.domain(filtered_datset.map(function(d) { return d.Company; }));
 
             // Call the x-axis
             svg.select("#x-axis").call(xAxis);
 
             /******** PERFORM DATA JOIN ************/
             // Join new data with old elements, if any.
-            /*var bars = 	svg.selectAll("rect")
-           .data(filtered_datset, function key(d) {
-                                    return d.Company;
-                                });*/
-
             var points = svg.selectAll("circle")
                 .data(filtered_datset, function key(d) {
                     return d.Country;
                 });
-            // console.log("Points"+points);
 
             /******** HANDLE UPDATE SELECTION ************/
             // Update the display of existing elelemnts to match new data
             // Perform a data join and add points to the chart
             points
+                .style("opacity", function (d) {
+                    if (showingTrace && display_year == 2007) return (d.Country === country) ? 1 : .1; //on 2007 year we need to see the trace country
+                    if (showingTrace) return (d.Country === country) ? 0 : .1; //after 2007, the ShowingTrace Update Patter below will take care of it
+                    else return 1;
+                })
                 .transition()
                 .duration(1000)
                 .attr("cx", function (d) {
@@ -522,64 +485,57 @@
                 .style("fill", function (d) {
                     return d.Global_Competitiveness_Index ? "green" : "orange";
                 })
-                .style("stroke", "black")
-                .style("opacity", function (d) {
-                    if (showingTrace) {
-                        return d.Country == country ? 1 : .1;
-                    } else {
+                .style("stroke", function (d) {
+                    return "black";
+                });
+
+
+            // ===========================
+            // ShowingTrace Update Pattern
+            // ===========================
+            if (showingTrace) {
+                country = $('#countryDropDownInput').val();
+                let selectedCountryInfo = reversedDataset.filter(countryAndYearFilter);
+                console.log(selectedCountryInfo);
+                //let selectedCountryInfo = data.filter(countryAndYearFilter);
+
+                let pointsTrace = svg.selectAll("circle")
+                    .data(selectedCountryInfo, function key(d) {
+                        return d.Country;
+                    });
+
+                //svg.selectAll("#"+country).remove();
+
+                let enterTrace = pointsTrace.enter()
+                    .append("circle")
+                    .attr("id", function (d) {
+                        console.log(d.Year); //TESTING
+                        return d.Country;
+                    })
+                    .attr("cx", function (d) {
+                        // console.log(d.GDP);
+                        return d.GDP ? xScale(+d.GDP) : margin.left;
+                    })
+                    .attr("cy", function (d) {
+                        return d.Global_Competitiveness_Index ? yScale(+d.Global_Competitiveness_Index) : svg_height;
+                    })
+                    .attr("r", function (d) {
+                        //Divide 90000 since the smallest country's population is so.
+                        if (d.Population) {
+                            let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
+                            return circleArea;
+                        } else return 0;
+                    })
+                    .style("fill", function (d) {
+                        return d.Global_Competitiveness_Index ? "green" : "orange";
+                    })
+                    .style("stroke", "black")
+                    .style("opacity", function (d) {
+                        //if (showingTrace) return d.Country == country ? 1 : .1;
+                        //else return 1;
                         return 1;
-                    }
-                });
-
-
-            // =======================
-            // If showingTrace = True;
-            // =======================
-            /*
-        let showingTrace = false; //disable temporarily TESTING
-        if (showingTrace) {
-
-            // console.log("Showing TRue!!")
-            country = $('#countryDropDownInput').val();
-            // console.log("country"+country);
-            var selectedCountryInfo = data.filter(countryAndYearFilter);
-            // var cx = selectedCountryInfo[0].GDP ? xScale(+selectedCountryInfo[0].GDP) : margin.left;
-            // // console.log(cx);
-            // var cy = selectedCountryInfo[0].Global_Competitiveness_Index ? yScale(+selectedCountryInfo[0].Global_Competitiveness_Index) : svg_height;
-            // var r = 
-            // console.log(selectedCountryInfo);
-
-            var pointsTrace = svg.selectAll("circle")// + display_year)
-                .data(selectedCountryInfo, function key(d) {
-                    return d.Country;
-                });
-
-            var enterTrace = pointsTrace.enter()
-                .append("circle")
-                .attr("id", function (d) {
-                    return d.Country;
-                })
-                .attr("cx", function (d) {
-                    // console.log(d.GDP);
-                    return d.GDP ? xScale(+d.GDP) : margin.left;
-                })
-                .attr("cy", function (d) {
-                    return d.Global_Competitiveness_Index ? yScale(+d.Global_Competitiveness_Index) : svg_height;
-                })
-                .attr("r", function (d) {
-                    //Divide 90000 since the smallest country's population is so.
-                    if (d.Population) {
-                        let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
-                        return circleArea;
-                    } else return 0;
-                })
-                .style("fill", function (d) {
-                    return d.Global_Competitiveness_Index ? "green" : "orange";
-                })
-                .style("stroke", "black")
-                ;
-        }
-*/
+                    });
+            }
 
             /******** HANDLE ENTER SELECTION ************/
             // Create new elements in the dataset
@@ -590,7 +546,6 @@
                     return d.Country;
                 })
                 .attr("cx", function (d) {
-                    // console.log(d.GDP);
                     return d.GDP ? xScale(+d.GDP) : margin.left;
                 })
                 .attr("cy", function (d) {
@@ -610,11 +565,8 @@
                         .style("opacity", 0);
                 })
                 .style("opacity", function (d) {
-                    if (showingTrace) {
-                        return d.Country == country ? 1 : .1;
-                    } else {
-                        return 1;
-                    }
+                    if (showingTrace) return d.Country == country ? 1 : .1;
+                    else return 1;
                 });
 
             enter.transition()
@@ -634,7 +586,7 @@
 
 
             /******** HANDLE EXIT SELECTION ************/
-            // Remove elements that not longer have a matching data eleement
+            // Remove elements that not longer have a matching data element
             points.exit()
                 .style("fill", "red")
                 .transition()
@@ -659,8 +611,7 @@
             .attr("width", rect_width)
             .attr("height", rect_height)
             .style("fill", "lightsteelblue")
-            .style("opacity", .9)
-            ;
+            .style("opacity", .9);
 
         //Add legend rects and Text
         var legend_circle_r = svg_width * 0.01;
@@ -670,8 +621,7 @@
             .attr("y", legend_margin.top)
             .attr("width", legend_circle_r)
             .attr("height", legend_circle_r)
-            .style("fill", "blue")
-            ;
+            .style("fill", "blue");
 
         svg.append("rect")
             // .attr("id","blue")
@@ -679,8 +629,7 @@
             .attr("y", legend_margin.top + gap + legend_circle_r)
             .attr("width", legend_circle_r)
             .attr("height", legend_circle_r)
-            .style("fill", "green")
-            ;
+            .style("fill", "green");
 
         svg.append("rect")
             // .attr("id","blue")
@@ -688,8 +637,7 @@
             .attr("y", legend_margin.top + 2 * (gap + legend_circle_r))
             .attr("width", legend_circle_r)
             .attr("height", legend_circle_r)
-            .style("fill", "orange")
-            ;
+            .style("fill", "orange");
 
         svg.append("rect")
             // .attr("id","blue")
@@ -697,8 +645,7 @@
             .attr("y", legend_margin.top + 3 * (gap + legend_circle_r))
             .attr("width", legend_circle_r)
             .attr("height", legend_circle_r)
-            .style("fill", "red")
-            ;
+            .style("fill", "red");
 
         svg.append("text")
             .attr("transform",
@@ -733,8 +680,9 @@
         //-- Ernestas and Jonathan File Loading START --//
         // Load the file data.csv and generate a visualisation based on it
         d3.csv(file).then(function (data) {
-            // console.log(data); //TESTING
+            //console.log(data); //TESTING
             dataset = data;
+            reversedDataset = data.slice(0).reverse();
             //handle the loaded data
             handleData(dataset);
         }, function (error) {
@@ -744,13 +692,14 @@
         });
 
         function handleData(dataset) {
-            // Update the domain of the x scale
-            //xScale.domain(dataset.map(function(d) { return d.GDP; }));
             // Call the x-axis
             svg.select("#x-axis").call(xAxis);
 
-            // Generate the visualisation
+            createXAxisForPillars(dataset);
+
+            // Generate the initial visualisation
             generateVis(dataset);
+
             if (showingGCIVisualization) {
                 // console.log("Showing GCI!!")
                 generateVisForPillars(dataset);
@@ -758,18 +707,21 @@
             //Populate the country drop down
             populateCountryTraceDropdown(dataset);
 
-            // Iterate through our avilable years.
-
-
             //setTimeout() runs only ONCE as oppose to setInterval() which loops automatically
             //since we want to control playback ourselves, we can't use setInterval()
             setInterval(function () {
 
                 if (playing) {
                     generateVis(dataset, true);
-
                     document.getElementById("yearSlider").value = display_year;
+
+                    if (showingGCIVisualization) {
+                        // console.log("Showing GCI!!")
+                        generateVisForPillars(dataset);
+                    }
                 }
+
+
             }, 2000);
         }
         //-- Ernestas and Jonathan File Loading END --//
@@ -798,7 +750,10 @@
         // 12th_pillar_Innovation,Global_Competitiveness_Index,Population,GDP,Income group,Region,
         // Forum classification
 
+
         //Create GCI SVG element as a group with the margins transform applied to it
+        var xAxis0;
+        var xScale0;
         var svgGCI = d3.select("#g2")
             .append("svg")
             .attr("width", svg_width + margin.left + margin.right)
@@ -809,27 +764,44 @@
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         // Create a scale to scale market share values nicely for bar heights
-        var yScale = d3.scaleLinear()
-            .domain([0, 50])
-            .range([svg_height, 0]);
+        // var yScale0 = d3.scaleLinear()
+        //     .domain([0, 10])
+        //     .range([svg_height, 0]);
+        
+        var x = [];
 
-        // Create a scale object to nicely take care of positioning bars along the horizontal axis
-        // We don't set the domain yet as data isn't loaded
-        var xScale = d3.scaleBand()
-            .rangeRound([0, svg_width], 0.1);
+        function createXAxisForPillars (dataset) {
+            var columns = dataset.columns;
+            // console.log(columns);    
+            for (i = 0; i < columns.length; i++) {
+                // console.log(columns[i].includes("pillar"));
+                if (columns[i].includes("pillar"))
+                    x.push(columns[i].split('_')[2]);
+            }
 
-        var yAxis = d3.axisLeft()
-            .scale(yScale)
-            .ticks(5)
-            .tickFormat(d3.format(".0s"))
-            ;
+            // console.log(x);
 
-        // Create an x-axis connected to the x scale
-        var xAxis = d3.axisBottom()
-            .scale(xScale)
-            // .tickFormat(d3.format(".0s"))
-            .ticks(10, ".0s")
-            ;
+            // Create a scale object to nicely take care of positioning bars along the horizontal axis
+            // We don't set the domain yet as data isn't loaded
+            xScale0 = d3.scaleBand()
+                //.rangeBands([0, 500], 1)
+                //.domain(x.map(function (d) { return d; }))
+                .domain(x)
+                .rangeRound([0, svg_width], 0.1)
+                .paddingInner(0.05);
+            
+            // Create an x-axis connected to the x scale
+            xAxis0 = d3.axisBottom()
+                .scale(xScale0)
+                // .tickFormat(d3.format(".0s"))
+                .ticks(10, ".0s");
+        }
+        
+        // var yAxis0 = d3.axisLeft()
+        //     .scale(yScale)
+        //     .ticks(5)
+        //     .tickFormat(d3.format(".0s"))
+        //     ;
 
         // Call the y axis
         svgGCI.append("g")
@@ -840,51 +812,54 @@
         // All but call the x-axis
         svgGCI.append("g")
             .attr("class", "axis")
-            .attr("id", "x-axis")
+            .attr("id", "x-axis0")
             .attr("transform", "translate(0," + svg_height + ")");
+
+        
 
         // Define a fucntion to draw a simple bar chart
         function generateVisForPillars(dataset) {
-            var columns = dataset.columns;
-            // console.log(columns);
-            var x = [];
-            for (i=0; i< columns.length; i++) {
-                console.log(columns[i].charAt[0]);
-                if (! isNaN(columns[i].charAt[0]))
-                    x.push(columns[i]);
-            }
-                
-            console.log(x);
+            country = $('#countryDropDownInputLeft').val();
             // Filter the data to only include the current year
-            var filtered_datset = dataset.filter(yearFilter);
+            var filtered_datset = dataset.filter(countryAndYearFilter0);
+
+            let twelveColumns = [];
+            if (typeof filtered_datset[0] !== 'undefined'){
+                twelveColumns = Object.entries(filtered_datset[0]).slice(2,14);
+                console.log(twelveColumns);
+                filtered_datset = twelveColumns;
+            }
 
             // Update the domain of the x scale
-            xScale.domain(filtered_datset.map(function (d) { return d.Company; }));
+            // xScale.domain(filtered_datset.map(function (d) { return d.Company; }));
             // Call the x-axis
-            svg.select("#x-axis").call(xAxis);
-
+            svgGCI.select("#x-axis0").call(xAxis0)
+            ;
+            // console.log(x);
             /******** PERFORM DATA JOIN ************/
             // Join new data with old elements, if any.
-            var bars = svg.selectAll("rect")
+            var bars = svgGCI.selectAll("rect")
                 .data(filtered_datset, function key(d) {
-                    return d.Company;
+                    return d;
                 });
-
+            
+            // console.log(bars);
             /******** HANDLE UPDATE SELECTION ************/
             // Update the display of existing elelemnts to mathc new data
+            let columnX = 0;
             bars
                 .transition()
                 .duration(1000)
                 .ease(d3.easeQuad)
-                .attr("x", function (d) {
-                    return xScale(d.Company);
+                .attr("x", function (d, i) {
+                    return xScale0(d[0].split('_')[2]);
                 })
                 .attr("y", function (d) {
-                    return yScale(+d.Share);
+                    return yScale(+d[1]);
                 })
-                .attr("width", xScale.bandwidth())
+                .attr("width", xScale0.bandwidth())
                 .attr("height", function (d) {
-                    return svg_height - yScale(+d.Share);
+                    return svg_height - yScale(+d[1]);
                 })
                 .style("fill", "Green");
 
@@ -894,21 +869,22 @@
             bars.enter()
                 .append("rect")
                 .attr("x", function (d, i) {
-                    return xScale(d.Company);
+                    return xScale0(d[0].split('_')[2]);
                 })
                 .attr("y", function (d) {
                     return svg_height;
                 })
-                .attr("width", xScale.bandwidth())
+                .attr("width", xScale0.bandwidth())
                 .attr("height", 0)
                 .transition()
                 .duration(1000)
                 .ease(d3.easeQuad)
                 .attr("y", function (d) {
-                    return yScale(+d.Share);
+                    console.log(d[1]);
+                    return yScale(+d[1]);
                 })
                 .attr("height", function (d) {
-                    return svg_height - yScale(+d.Share);
+                    return svg_height - yScale(+d[1]);
                 })
                 .style("fill", "Blue");
 
@@ -923,7 +899,7 @@
                 .remove();
 
             // Set the year label
-            d3.select("#year_header").text("Year: " + display_year)
+            //d3.select("#year_header").text("Year: " + display_year)
 
         }
 
