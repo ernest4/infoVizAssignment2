@@ -2,6 +2,8 @@
     Feature to do:
     1. color bubble with region.
     2. Initial page with first graph open
+    3. Speed up button
+    4. Automatic select for left box.
  -->
 <!DOCTYPE html>
 <html lang="en">
@@ -154,7 +156,7 @@
                     <p>Show Pillars of Global Competitiveness Index (GCI)</p>
                 </button>
                 <br />
-                <div id="gciVisualizationControl" class="collapse">
+                <div id="gciVisualizationControl" class="collapse in">
                     <!-- Second visualization will go here-->
                     <h2 id="g2"></h2>
 
@@ -231,19 +233,19 @@
         // ==================================================================
         // Helper functions that makes a country circle outstanding....or not!
         // ==================================================================
-       /* function outstandACountry(country) {
-            svg.selectAll("circle")
-                .transition().duration(1000).ease(d3.easeLinear).style("opacity", .1);
-            svg.select("#" + country)
-                .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
-        };
-
-        function AllCountryLookTheSame(country) {
-            svg.selectAll("circle")
-                .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
-            // svg.select("#"+country)
-            // .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
-        }; */
+        /* function outstandACountry(country) {
+             svg.selectAll("circle")
+                 .transition().duration(1000).ease(d3.easeLinear).style("opacity", .1);
+             svg.select("#" + country)
+                 .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
+         };
+ 
+         function AllCountryLookTheSame(country) {
+             svg.selectAll("circle")
+                 .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
+             // svg.select("#"+country)
+             // .transition().duration(1000).ease(d3.easeLinear).style("opacity", 1);
+         }; */
 
         // ===========================
         // Drop down box to show trace
@@ -301,7 +303,8 @@
         });
 
         //initial state of the visualization display
-        let showingGCIVisualization = false;
+        // let showingGCIVisualization = false;
+        let showingGCIVisualization = true;
         //assigning callbacks to button
         $("#gciVisualizationDisplayButton").on("click", function () {
             //let rows = $('#...').val();
@@ -398,16 +401,6 @@
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         //.style("fill", "white");
 
-        //Create GCI SVG element as a group with the margins transform applied to it
-        var svgCGI = d3.select("#g2")
-            .append("svg")
-            .attr("width", svg_width + margin.left + margin.right)
-            .attr("height", svg_height + margin.top + margin.bottom)
-            .style("background", "white")
-            //.style("width", "80vw")
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
         //-- Wang and Ernestas Main Graph Axes START --//
         // Create linear Y scale for Global Competitive Index
@@ -476,8 +469,8 @@
         //-- Wang and Ernestas Main Graph START --//
         function generateVis(data, advanceTime = false) {
             //advance the time forward and set the year label
-            if (advanceTime){
-                if (display_year+1 > 2017) {
+            if (advanceTime) {
+                if (display_year + 1 > 2017) {
                     display_year = 2007;
                 } else {
                     display_year = display_year + 1;
@@ -530,8 +523,8 @@
                     return d.Global_Competitiveness_Index ? "green" : "orange";
                 })
                 .style("stroke", "black")
-                .style("opacity", function(d){
-                    if(showingTrace){
+                .style("opacity", function (d) {
+                    if (showingTrace) {
                         return d.Country == country ? 1 : .1;
                     } else {
                         return 1;
@@ -542,50 +535,50 @@
             // =======================
             // If showingTrace = True;
             // =======================
-                /*
-            let showingTrace = false; //disable temporarily TESTING
-            if (showingTrace) {
+            /*
+        let showingTrace = false; //disable temporarily TESTING
+        if (showingTrace) {
 
-                // console.log("Showing TRue!!")
-                country = $('#countryDropDownInput').val();
-                // console.log("country"+country);
-                var selectedCountryInfo = data.filter(countryAndYearFilter);
-                // var cx = selectedCountryInfo[0].GDP ? xScale(+selectedCountryInfo[0].GDP) : margin.left;
-                // // console.log(cx);
-                // var cy = selectedCountryInfo[0].Global_Competitiveness_Index ? yScale(+selectedCountryInfo[0].Global_Competitiveness_Index) : svg_height;
-                // var r = 
-                // console.log(selectedCountryInfo);
+            // console.log("Showing TRue!!")
+            country = $('#countryDropDownInput').val();
+            // console.log("country"+country);
+            var selectedCountryInfo = data.filter(countryAndYearFilter);
+            // var cx = selectedCountryInfo[0].GDP ? xScale(+selectedCountryInfo[0].GDP) : margin.left;
+            // // console.log(cx);
+            // var cy = selectedCountryInfo[0].Global_Competitiveness_Index ? yScale(+selectedCountryInfo[0].Global_Competitiveness_Index) : svg_height;
+            // var r = 
+            // console.log(selectedCountryInfo);
 
-                var pointsTrace = svg.selectAll("circle")// + display_year)
-                    .data(selectedCountryInfo, function key(d) {
-                        return d.Country;
-                    });
+            var pointsTrace = svg.selectAll("circle")// + display_year)
+                .data(selectedCountryInfo, function key(d) {
+                    return d.Country;
+                });
 
-                var enterTrace = pointsTrace.enter()
-                    .append("circle")
-                    .attr("id", function (d) {
-                        return d.Country;
-                    })
-                    .attr("cx", function (d) {
-                        // console.log(d.GDP);
-                        return d.GDP ? xScale(+d.GDP) : margin.left;
-                    })
-                    .attr("cy", function (d) {
-                        return d.Global_Competitiveness_Index ? yScale(+d.Global_Competitiveness_Index) : svg_height;
-                    })
-                    .attr("r", function (d) {
-                        //Divide 90000 since the smallest country's population is so.
-                        if (d.Population) {
-                            let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
-                            return circleArea;
-                        } else return 0;
-                    })
-                    .style("fill", function (d) {
-                        return d.Global_Competitiveness_Index ? "green" : "orange";
-                    })
-                    .style("stroke", "black")
-                    ;
-            }
+            var enterTrace = pointsTrace.enter()
+                .append("circle")
+                .attr("id", function (d) {
+                    return d.Country;
+                })
+                .attr("cx", function (d) {
+                    // console.log(d.GDP);
+                    return d.GDP ? xScale(+d.GDP) : margin.left;
+                })
+                .attr("cy", function (d) {
+                    return d.Global_Competitiveness_Index ? yScale(+d.Global_Competitiveness_Index) : svg_height;
+                })
+                .attr("r", function (d) {
+                    //Divide 90000 since the smallest country's population is so.
+                    if (d.Population) {
+                        let circleArea = Math.sqrt((+d.Population / Math.PI) / 90000);
+                        return circleArea;
+                    } else return 0;
+                })
+                .style("fill", function (d) {
+                    return d.Global_Competitiveness_Index ? "green" : "orange";
+                })
+                .style("stroke", "black")
+                ;
+        }
 */
 
             /******** HANDLE ENTER SELECTION ************/
@@ -616,8 +609,8 @@
                         .duration(500)
                         .style("opacity", 0);
                 })
-                .style("opacity", function(d){
-                    if(showingTrace){
+                .style("opacity", function (d) {
+                    if (showingTrace) {
                         return d.Country == country ? 1 : .1;
                     } else {
                         return 1;
@@ -740,7 +733,7 @@
         //-- Ernestas and Jonathan File Loading START --//
         // Load the file data.csv and generate a visualisation based on it
         d3.csv(file).then(function (data) {
-            console.log(data); //TESTING
+            // console.log(data); //TESTING
             dataset = data;
             //handle the loaded data
             handleData(dataset);
@@ -758,7 +751,10 @@
 
             // Generate the visualisation
             generateVis(dataset);
-
+            if (showingGCIVisualization) {
+                // console.log("Showing GCI!!")
+                generateVisForPillars(dataset);
+            }
             //Populate the country drop down
             populateCountryTraceDropdown(dataset);
 
@@ -793,6 +789,145 @@
                 countryDropDownUL.appendChild(option);
             };
         }
+
+        // Header of csv: Country,Year,1st_pillar_Institutions,2nd_pillar_Infrastructure,
+        // 3rd_pillar_Macroeconomic_environment,4th_pillar_Health_and_primary_education,
+        // 5th_pillar_Higher_education_and_training,6th_pillar_Goods_market_efficiency,
+        // 7th_pillar_Labor_market_efficiency,8th_pillar_Financial_market_development,
+        // 9th_pillar_Technological_readiness,10th_pillar_Market_size,11th_pillar_Business_sophistication_,
+        // 12th_pillar_Innovation,Global_Competitiveness_Index,Population,GDP,Income group,Region,
+        // Forum classification
+
+        //Create GCI SVG element as a group with the margins transform applied to it
+        var svgGCI = d3.select("#g2")
+            .append("svg")
+            .attr("width", svg_width + margin.left + margin.right)
+            .attr("height", svg_height + margin.top + margin.bottom)
+            .style("background", "white")
+            //.style("width", "80vw")
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Create a scale to scale market share values nicely for bar heights
+        var yScale = d3.scaleLinear()
+            .domain([0, 50])
+            .range([svg_height, 0]);
+
+        // Create a scale object to nicely take care of positioning bars along the horizontal axis
+        // We don't set the domain yet as data isn't loaded
+        var xScale = d3.scaleBand()
+            .rangeRound([0, svg_width], 0.1);
+
+        var yAxis = d3.axisLeft()
+            .scale(yScale)
+            .ticks(5)
+            .tickFormat(d3.format(".0s"))
+            ;
+
+        // Create an x-axis connected to the x scale
+        var xAxis = d3.axisBottom()
+            .scale(xScale)
+            // .tickFormat(d3.format(".0s"))
+            .ticks(10, ".0s")
+            ;
+
+        // Call the y axis
+        svgGCI.append("g")
+            .attr("class", "axis")
+            .attr("id", "y-axis")
+            .call(yAxis);
+
+        // All but call the x-axis
+        svgGCI.append("g")
+            .attr("class", "axis")
+            .attr("id", "x-axis")
+            .attr("transform", "translate(0," + svg_height + ")");
+
+        // Define a fucntion to draw a simple bar chart
+        function generateVisForPillars(dataset) {
+            var columns = dataset.columns;
+            // console.log(columns);
+            var x = [];
+            for (i=0; i< columns.length; i++) {
+                console.log(columns[i].charAt[0]);
+                if (! isNaN(columns[i].charAt[0]))
+                    x.push(columns[i]);
+            }
+                
+            console.log(x);
+            // Filter the data to only include the current year
+            var filtered_datset = dataset.filter(yearFilter);
+
+            // Update the domain of the x scale
+            xScale.domain(filtered_datset.map(function (d) { return d.Company; }));
+            // Call the x-axis
+            svg.select("#x-axis").call(xAxis);
+
+            /******** PERFORM DATA JOIN ************/
+            // Join new data with old elements, if any.
+            var bars = svg.selectAll("rect")
+                .data(filtered_datset, function key(d) {
+                    return d.Company;
+                });
+
+            /******** HANDLE UPDATE SELECTION ************/
+            // Update the display of existing elelemnts to mathc new data
+            bars
+                .transition()
+                .duration(1000)
+                .ease(d3.easeQuad)
+                .attr("x", function (d) {
+                    return xScale(d.Company);
+                })
+                .attr("y", function (d) {
+                    return yScale(+d.Share);
+                })
+                .attr("width", xScale.bandwidth())
+                .attr("height", function (d) {
+                    return svg_height - yScale(+d.Share);
+                })
+                .style("fill", "Green");
+
+
+            /******** HANDLE ENTER SELECTION ************/
+            // Create new elements in the dataset
+            bars.enter()
+                .append("rect")
+                .attr("x", function (d, i) {
+                    return xScale(d.Company);
+                })
+                .attr("y", function (d) {
+                    return svg_height;
+                })
+                .attr("width", xScale.bandwidth())
+                .attr("height", 0)
+                .transition()
+                .duration(1000)
+                .ease(d3.easeQuad)
+                .attr("y", function (d) {
+                    return yScale(+d.Share);
+                })
+                .attr("height", function (d) {
+                    return svg_height - yScale(+d.Share);
+                })
+                .style("fill", "Blue");
+
+            /******** HANDLE EXIT SELECTION ************/
+            // Remove bars that not longer have a matching data eleement
+            bars.exit()
+                .transition()
+                .duration(1000)
+                .ease(d3.easeQuad)
+                .attr("width", 0)
+                .style("fill", "Red")
+                .remove();
+
+            // Set the year label
+            d3.select("#year_header").text("Year: " + display_year)
+
+        }
+
+
 
     </script>
 </body>
