@@ -349,7 +349,7 @@
         };
 
         //define input file
-        let file = "GCI_CompleteData3.csv";
+        let file = "GCI_CompleteData4.csv";
 
         // Define margins
         var margin = { top: 10, right: 10, bottom: 45, left: 55 };
@@ -701,7 +701,7 @@
         }, function (error) {
             console.log("Error Loading data!");
             console.log(error);
-            document.getElementById("hans").innerHTML += "<br/><span style=\"color: red;\"> Error Loading Data! Please check that " + file + " is present in the same directory as this html file. <br/><br/> The " + file + " was included with the submission of this assignmnet.<br/><br/> Please note that GCI_CompleteData2.csv may NOT be used! <br/><br/> Both " + file + " and GCI_CompleteData2.csv have the same contents, however the rows in " + file + " have been order based on country population and this visualization relies on this ordering.</span>";
+            document.getElementById("hans").innerHTML += "<br/><span style=\"color: red;\"> Error Loading Data! Please check that " + file + " is present in the same directory as this html file. <br/><br/> The " + file + " was included with the submission of this assignmnet.<br/><br/> Please note that GCI_CompleteData3.csv may NOT be used! <br/><br/> Both " + file + " and GCI_CompleteData3.csv have the same contents, however the rows in " + file + " have been order based on country population and this visualization relies on this ordering.</span>";
         });
 
         function handleData(dataset) {
