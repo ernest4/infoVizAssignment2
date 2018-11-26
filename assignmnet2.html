@@ -31,6 +31,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.core.js"></script>
+    <link rel="stylesheet" href="legends.css">
 </head>
 
 <!-- Jonathan and Ernestas body Bootstrap START -->
@@ -159,7 +160,6 @@
                 <div id="gciVisualizationControl" class="collapse in">
                     <!-- Second visualization will go here-->
                     <h2 id="g2"></h2>
-
                     <br />
                     <div class="row">
                         <div class="col-xs-12">
@@ -303,6 +303,7 @@
             if (country == "") return;
 
             //showGCIpillars(country, comparing); //Show the GCI pillars for this country and compare with other if needed
+            generateVisForPillars(dataset);
 
             console.log("showPillarsButtonLeft:: is showing trace? " + country); //TESTING
         });
@@ -319,6 +320,7 @@
             if (country == "") return;
 
             //showGCIpillars(country, comparing); //Show the GCI pillars for this country and compare with other if needed
+            generateVisForPillars(dataset, "right");
 
             console.log("showPillarsButtonRight:: is showing trace? " + country); //TESTING
         });
@@ -333,6 +335,7 @@
             display_year = +this.value;
             generateVis(dataset, false);
             generateVisForPillars(dataset);
+            generateVisForPillars(dataset, "right");
         };
 
         //define input file
@@ -351,8 +354,8 @@
         function yearFilter(value) {
             return (value.Year == display_year)
         }
-        
-        function countryAndYearFilter0 (value) {
+
+        function countryAndYearFilter0(value) {
             return yearFilter(value) && value.Country == country;
         }
 
@@ -463,8 +466,8 @@
             // Perform a data join and add points to the chart
             points
                 .style("opacity", function (d) {
-                    if (showingTrace && display_year == 2007) return (d.Country === country) ? 1 : .1; //on 2007 year we need to see the trace country
-                    if (showingTrace) return (d.Country === country) ? 0 : .1; //after 2007, the ShowingTrace Update Patter below will take care of it
+                    //if (showingTrace && display_year == 2007) return (d.Country === country) ? 1 : .1; //on 2007 year we need to see the trace country
+                    if (showingTrace) return .1; //after 2007, the ShowingTrace Update Patter below will take care of it
                     else return 1;
                 })
                 .transition()
@@ -499,18 +502,19 @@
                 console.log(selectedCountryInfo);
                 //let selectedCountryInfo = data.filter(countryAndYearFilter);
 
-                let pointsTrace = svg.selectAll("circle")
+                //svg.selectAll("#"+country).remove();
+
+                let pointsTrace = svg.selectAll("#circle_trace")
                     .data(selectedCountryInfo, function key(d) {
                         return d.Country;
                     });
-
-                //svg.selectAll("#"+country).remove();
 
                 let enterTrace = pointsTrace.enter()
                     .append("circle")
                     .attr("id", function (d) {
                         console.log(d.Year); //TESTING
-                        return d.Country;
+                        //return d.Country;
+                        return "circle_trace";
                     })
                     .attr("cx", function (d) {
                         // console.log(d.GDP);
@@ -695,6 +699,7 @@
             // Call the x-axis
             svg.select("#x-axis").call(xAxis);
 
+
             createXAxisForPillars(dataset);
 
             // Generate the initial visualisation
@@ -703,6 +708,7 @@
             if (showingGCIVisualization) {
                 // console.log("Showing GCI!!")
                 generateVisForPillars(dataset);
+                generateVisForPillars(dataset, "right");
             }
             //Populate the country drop down
             populateCountryTraceDropdown(dataset);
@@ -718,6 +724,7 @@
                     if (showingGCIVisualization) {
                         // console.log("Showing GCI!!")
                         generateVisForPillars(dataset);
+                        generateVisForPillars(dataset, "right");
                     }
                 }
 
@@ -752,6 +759,10 @@
 
 
         //Create GCI SVG element as a group with the margins transform applied to it
+        var width = 500;
+        var height = 75;
+        var svgw = 20;
+        var svgh = 20;
         var xAxis0;
         var xScale0;
         var svgGCI = d3.select("#g2")
@@ -763,14 +774,9 @@
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        // Create a scale to scale market share values nicely for bar heights
-        // var yScale0 = d3.scaleLinear()
-        //     .domain([0, 10])
-        //     .range([svg_height, 0]);
-        
         var x = [];
 
-        function createXAxisForPillars (dataset) {
+        function createXAxisForPillars(dataset) {
             var columns = dataset.columns;
             // console.log(columns);    
             for (i = 0; i < columns.length; i++) {
@@ -779,24 +785,20 @@
                     x.push(columns[i].split('_')[2]);
             }
 
-            // console.log(x);
-
-            // Create a scale object to nicely take care of positioning bars along the horizontal axis
+            // Create a scale object to nicely take care of positioning leftBars along the horizontal axis
             // We don't set the domain yet as data isn't loaded
             xScale0 = d3.scaleBand()
-                //.rangeBands([0, 500], 1)
-                //.domain(x.map(function (d) { return d; }))
                 .domain(x)
                 .rangeRound([0, svg_width], 0.1)
-                .paddingInner(0.05);
-            
+                .paddingInner(0.1);
+
             // Create an x-axis connected to the x scale
             xAxis0 = d3.axisBottom()
                 .scale(xScale0)
                 // .tickFormat(d3.format(".0s"))
                 .ticks(10, ".0s");
         }
-        
+
         // var yAxis0 = d3.axisLeft()
         //     .scale(yScale)
         //     .ticks(5)
@@ -815,92 +817,216 @@
             .attr("id", "x-axis0")
             .attr("transform", "translate(0," + svg_height + ")");
 
-        
+        // =================================
+        // generate vis for pillars function
+        // =================================
+        function generateVisForPillars(dataset, side = "left") {
+            country = side === "left" ? $('#countryDropDownInputLeft').val() : $('#countryDropDownInputRight').val();
 
-        // Define a fucntion to draw a simple bar chart
-        function generateVisForPillars(dataset) {
-            country = $('#countryDropDownInputLeft').val();
+            // Legend Box
+            if ($('#countryDropDownInputLeft').val() || $('#countryDropDownInputRight').val()) {
+                svgGCI.selectAll("#legendBox").enter()
+                    .append("rect")
+                    .attr("id", "legendBox")
+                    .attr("x", svg_width - rect_width)
+                    .attr("y", 0)
+                    .attr("width", rect_width)
+                    .attr("height", rect_height)
+                    .style("fill", "lightgray")
+                    .style("opacity", .9)
+                    ;
+            };
+
+            if ($('#countryDropDownInputLeft').val()) {
+                svgGCI.append("rect")
+                    .attr("x", svg_width - rect_width + 10)
+                    .attr("y", 10)
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .style("fill", "#fc8d59");
+
+                var d = [$('#countryDropDownInputLeft').val()];
+                // console.log(d);
+                svgGCI.selectAll("#leftText").data(d).enter().append("text")
+                    .attr("transform",
+                        "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+                        (legend_margin.top + 10 + gap + legend_circle_r) + ")")
+                    // .style("text-anchor", "middle")
+                    // .attr('font-size', '14')
+                    .text(function (d) {
+                        // console.log(d);
+                        return d
+                    })
+                    .attr("id", "leftText")
+                    ;
+            };
+
+            if ($('#countryDropDownInputRight').val()) {
+                svgGCI.append("rect")
+                    .attr("x", svg_width - rect_width + 10)
+                    .attr("y", 20 + gap)
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .style("fill", "#91bfdb");
+
+                svgGCI.append("text")
+                    .attr("transform",
+                        "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+                        (legend_margin.top + 10 + gap + legend_circle_r) + ")")
+                    // .style("text-anchor", "middle")
+                    .text($('#countryDropDownInputRight').val());
+            }
+
+
+            // Update the domain of the x scale
+            // Call the x-axis
+            svgGCI.select("#x-axis0").call(xAxis0);
+
             // Filter the data to only include the current year
-            var filtered_datset = dataset.filter(countryAndYearFilter0);
+            let filtered_datset = dataset.filter(countryAndYearFilter0);
 
             let twelveColumns = [];
-            if (typeof filtered_datset[0] !== 'undefined'){
-                twelveColumns = Object.entries(filtered_datset[0]).slice(2,14);
-                console.log(twelveColumns);
+            if (typeof filtered_datset[0] !== 'undefined') {
+                twelveColumns = Object.entries(filtered_datset[0]).slice(2, 14);
+                //console.log(twelveColumns);
                 filtered_datset = twelveColumns;
             }
 
-            // Update the domain of the x scale
-            // xScale.domain(filtered_datset.map(function (d) { return d.Company; }));
-            // Call the x-axis
-            svgGCI.select("#x-axis0").call(xAxis0)
-            ;
-            // console.log(x);
-            /******** PERFORM DATA JOIN ************/
-            // Join new data with old elements, if any.
-            var bars = svgGCI.selectAll("rect")
-                .data(filtered_datset, function key(d) {
-                    return d;
-                });
-            
-            // console.log(bars);
-            /******** HANDLE UPDATE SELECTION ************/
-            // Update the display of existing elelemnts to mathc new data
-            let columnX = 0;
-            bars
-                .transition()
-                .duration(1000)
-                .ease(d3.easeQuad)
-                .attr("x", function (d, i) {
-                    return xScale0(d[0].split('_')[2]);
-                })
-                .attr("y", function (d) {
-                    return yScale(+d[1]);
-                })
-                .attr("width", xScale0.bandwidth())
-                .attr("height", function (d) {
-                    return svg_height - yScale(+d[1]);
-                })
-                .style("fill", "Green");
+            if (side === "left") {
+                /******** PERFORM DATA JOIN ************/
+                // Join new data with old elements, if any.
+                let leftBars = svgGCI.selectAll("#rect_left")
+                    .data(filtered_datset, function key(d) {
+                        //return d;
+                        return d[0].split('_')[2];
+                    });
+
+                // console.log(leftBars);
+                /******** HANDLE UPDATE SELECTION ************/
+                // Update the display of existing elelemnts to mathc new data
+                leftBars
+                    .transition()
+                    .duration(1000)
+                    .ease(d3.easeQuad)
+                    .attr("x", function (d, i) {
+                        let xPos = xScale0(d[0].split('_')[2]);
+                        return xPos;
+                    })
+                    .attr("y", function (d) {
+                        return yScale(+d[1]);
+                    })
+                    .attr("width", xScale0.bandwidth() / 2)
+                    .attr("height", function (d) {
+                        return svg_height - yScale(+d[1]);
+                    })
+                    .style("fill", "#fc8d59");
 
 
-            /******** HANDLE ENTER SELECTION ************/
-            // Create new elements in the dataset
-            bars.enter()
-                .append("rect")
-                .attr("x", function (d, i) {
-                    return xScale0(d[0].split('_')[2]);
-                })
-                .attr("y", function (d) {
-                    return svg_height;
-                })
-                .attr("width", xScale0.bandwidth())
-                .attr("height", 0)
-                .transition()
-                .duration(1000)
-                .ease(d3.easeQuad)
-                .attr("y", function (d) {
-                    // console.log(d[1]);
-                    return yScale(+d[1]);
-                })
-                .attr("height", function (d) {
-                    return svg_height - yScale(+d[1]);
-                })
-                .style("fill", "Blue");
+                /******** HANDLE ENTER SELECTION ************/
+                // Create new elements in the dataset
+                leftBars.enter()
+                    .append("rect")
+                    .attr("id", function (d) {
+                        return "rect_left";
+                    })
+                    .attr("x", function (d, i) {
+                        let xPos = xScale0(d[0].split('_')[2]);
+                        return xPos;
+                    })
+                    .attr("y", function (d) {
+                        return svg_height;
+                    })
+                    .attr("width", xScale0.bandwidth() / 2)
+                    .attr("height", 0)
+                    .transition()
+                    .duration(1000)
+                    .ease(d3.easeQuad)
+                    .attr("y", function (d) {
+                        //console.log(d[1]);
+                        return yScale(+d[1]);
+                    })
+                    .attr("height", function (d) {
+                        return svg_height - yScale(+d[1]);
+                    })
+                    .style("fill", "#fc8d59");
 
-            /******** HANDLE EXIT SELECTION ************/
-            // Remove bars that not longer have a matching data eleement
-            bars.exit()
-                .transition()
-                .duration(1000)
-                .ease(d3.easeQuad)
-                .attr("width", 0)
-                .style("fill", "Red")
-                .remove();
+                /******** HANDLE EXIT SELECTION ************/
+                // Remove leftBars that not longer have a matching data eleement
+                leftBars.exit()
+                    .transition()
+                    .duration(1000)
+                    .ease(d3.easeQuad)
+                    .attr("width", 0)
+                    .style("fill", "Red")
+                    .remove();
+            } else { //right side...
+                /******** PERFORM DATA JOIN ************/
+                // Join new data with old elements, if any.
+                let rightBars = svgGCI.selectAll("#rect_right")
+                    .data(filtered_datset, function key(d) {
+                        //return d;
+                        return d[0].split('_')[2];
+                    });
 
-            // Set the year label
-            //d3.select("#year_header").text("Year: " + display_year)
+                // console.log(leftBars);
+                /******** HANDLE UPDATE SELECTION ************/
+                // Update the display of existing elelemnts to mathc new data
+                rightBars
+                    .transition()
+                    .duration(1000)
+                    .ease(d3.easeQuad)
+                    .attr("x", function (d, i) {
+                        let xPos = xScale0(d[0].split('_')[2]);
+                        return xPos + xScale0.bandwidth() / 2;
+                    })
+                    .attr("y", function (d) {
+                        return yScale(+d[1]);
+                    })
+                    .attr("width", xScale0.bandwidth() / 2)
+                    .attr("height", function (d) {
+                        return svg_height - yScale(+d[1]);
+                    })
+                    .style("fill", "#91bfdb");
 
+
+                /******** HANDLE ENTER SELECTION ************/
+                // Create new elements in the dataset
+                rightBars.enter()
+                    .append("rect")
+                    .attr("id", function (d) {
+                        return "rect_right";
+                    })
+                    .attr("x", function (d, i) {
+                        let xPos = xScale0(d[0].split('_')[2]);
+                        return xPos + xScale0.bandwidth() / 2;
+                    })
+                    .attr("y", function (d) {
+                        return svg_height;
+                    })
+                    .attr("width", xScale0.bandwidth() / 2)
+                    .attr("height", 0)
+                    .transition()
+                    .duration(1000)
+                    .ease(d3.easeQuad)
+                    .attr("y", function (d) {
+                        //console.log(d[1]);
+                        return yScale(+d[1]);
+                    })
+                    .attr("height", function (d) {
+                        return svg_height - yScale(+d[1]);
+                    })
+                    .style("fill", "#91bfdb");
+
+                /******** HANDLE EXIT SELECTION ************/
+                // Remove RightBars that not longer have a matching data eleement
+                rightBars.exit()
+                    .transition()
+                    .duration(1000)
+                    .ease(d3.easeQuad)
+                    .attr("width", 0)
+                    .style("fill", "red")
+                    .remove();
+            }
         }
 
 
