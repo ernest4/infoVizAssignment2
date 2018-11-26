@@ -374,6 +374,11 @@
             return value.Country == country && +value.Year <= +display_year;
         }
 
+        var color = {"East Asia and Pacific": "#8c510a", "Eurasia": "#d8b365", 
+        "Europe and North America": "#f6e8c3", "Latin America and the Caribbean": "#f5f5f5",
+        "Middle East and North Africa": "#c7eae5", "South Asia": "#5ab4ac", 
+        "Sub-Saharan Africa": "#01665e"};
+        
         //Create Main SVG element as a group with the margins transform applied to it
         var svg = d3.select("#g1")
             .append("svg")
@@ -492,7 +497,8 @@
                     } else return 0;
                 })
                 .style("fill", function (d) {
-                    return d.Global_Competitiveness_Index ? "green" : "orange";
+                    // return d.Global_Competitiveness_Index ? "green" : "orange";
+                    return d.Global_Competitiveness_Index ? color[d["Forum classification"]] : "black";
                 })
                 .style("stroke", function (d) {
                     return "black";
@@ -592,7 +598,8 @@
                     } else return 0;
                 })
                 .style("fill", function (d) {
-                    return d.Global_Competitiveness_Index ? "blue" : "orange";
+                    // return d.Global_Competitiveness_Index ? "blue" : "orange";
+                    return d.Global_Competitiveness_Index ? color[d["Forum classification"]] : "black";
                 })
                 .style("stroke", "black");
 
@@ -615,8 +622,8 @@
         //-- Jonathan and Wang Graph Legend START --//
         //Add legend frame
         var legend_margin = { top: 10, right: 10, bottom: 10, left: 10 };
-        var rect_width = svg_width * 0.2;
-        var rect_height = svg_height * .2;
+        var rect_width = svg_width * 0.23;
+        var rect_height = svg_height * .4;
         var gap = 10;
         svg.append("rect")
             .attr("x", svg_width - rect_width)
@@ -628,65 +635,85 @@
 
         //Add legend rects and Text
         var legend_circle_r = svg_width * 0.01;
-        svg.append("rect")
-            .attr("id", "blue")
-            .attr("x", svg_width - rect_width + legend_margin.left)
-            .attr("y", legend_margin.top)
-            .attr("width", legend_circle_r)
-            .attr("height", legend_circle_r)
-            .style("fill", "blue");
+        // svg.append("rect")
+        //     .attr("id", "blue")
+        //     .attr("x", svg_width - rect_width + legend_margin.left)
+        //     .attr("y", legend_margin.top)
+        //     .attr("width", legend_circle_r)
+        //     .attr("height", legend_circle_r)
+        //     .style("fill", "blue");
 
-        svg.append("rect")
+        // svg.append("rect")
+        //     // .attr("id","blue")
+        //     .attr("x", svg_width - rect_width + legend_margin.left)
+        //     .attr("y", legend_margin.top + gap + legend_circle_r)
+        //     .attr("width", legend_circle_r)
+        //     .attr("height", legend_circle_r)
+        //     .style("fill", "green");
+
+        // svg.append("rect")
+        //     // .attr("id","blue")
+        //     .attr("x", svg_width - rect_width + legend_margin.left)
+        //     .attr("y", legend_margin.top + 2 * (gap + legend_circle_r))
+        //     .attr("width", legend_circle_r)
+        //     .attr("height", legend_circle_r)
+        //     .style("fill", "orange");
+
+        // svg.append("rect")
+        //     // .attr("id","blue")
+        //     .attr("x", svg_width - rect_width + legend_margin.left)
+        //     .attr("y", legend_margin.top + 3 * (gap + legend_circle_r))
+        //     .attr("width", legend_circle_r)
+        //     .attr("height", legend_circle_r)
+        //     .style("fill", "red");
+        
+        var i=0;
+        for (const [key, value] of Object.entries(color)){
+            svg.append("rect")
             // .attr("id","blue")
             .attr("x", svg_width - rect_width + legend_margin.left)
-            .attr("y", legend_margin.top + gap + legend_circle_r)
+            .attr("y", legend_margin.top + i * (gap + legend_circle_r))
             .attr("width", legend_circle_r)
             .attr("height", legend_circle_r)
-            .style("fill", "green");
+            .style("fill", value);
 
-        svg.append("rect")
-            // .attr("id","blue")
-            .attr("x", svg_width - rect_width + legend_margin.left)
-            .attr("y", legend_margin.top + 2 * (gap + legend_circle_r))
-            .attr("width", legend_circle_r)
-            .attr("height", legend_circle_r)
-            .style("fill", "orange");
-
-        svg.append("rect")
-            // .attr("id","blue")
-            .attr("x", svg_width - rect_width + legend_margin.left)
-            .attr("y", legend_margin.top + 3 * (gap + legend_circle_r))
-            .attr("width", legend_circle_r)
-            .attr("height", legend_circle_r)
-            .style("fill", "red");
-
-        svg.append("text")
+            svg.append("text")
             .attr("transform",
                 "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
-                (legend_margin.top + 10) + ")")
+                (legend_margin.top + 10 + i*(gap + legend_circle_r)) + ")")
             // .style("text-anchor", "middle")
-            .text("New Enter");
+            .text(key)
+            .attr('font-size', '14')
+            ;
+            i++;
+        }
+        // svg.append("text")
+        //     .attr("transform",
+        //         "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+        //         (legend_margin.top + 10) + ")")
+        //     // .style("text-anchor", "middle")
+        //     .text("New Enter");
 
-        svg.append("text")
-            .attr("transform",
-                "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
-                (legend_margin.top + 10 + gap + legend_circle_r) + ")")
-            // .style("text-anchor", "middle")
-            .text("Update");
+        // svg.append("text")
+        //     .attr("transform",
+        //         "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+        //         (legend_margin.top + 10 + gap + legend_circle_r) + ")")
+        //     // .style("text-anchor", "middle")
+        //     .text("Update");
 
-        svg.append("text")
-            .attr("transform",
-                "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
-                (legend_margin.top + 2 * (gap + legend_circle_r) + 10) + ")")
-            // .style("text-anchor", "middle")
-            .text("Missing Value");
+        // svg.append("text")
+        //     .attr("transform",
+        //         "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+        //         (legend_margin.top + 2 * (gap + legend_circle_r) + 10) + ")")
+        //     // .style("text-anchor", "middle")
+        //     .text("Missing Value");
 
-        svg.append("text")
-            .attr("transform",
-                "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
-                (legend_margin.top + 3 * (gap + legend_circle_r) + 10) + ")")
-            // .style("text-anchor", "middle")
-            .text("Exiting");
+        // svg.append("text")
+        //     .attr("transform",
+        //         "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+        //         (legend_margin.top + 3 * (gap + legend_circle_r) + 10) + ")")
+        //     // .style("text-anchor", "middle")
+        //     .text("Exiting");
         //-- Jonathan and Wang Graph Legend END --//
 
 
