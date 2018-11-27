@@ -159,7 +159,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <br />
-                <div id="gciVisualizationControl" class="collapse in">
+                <div id="gciVisualizationControl" class="collapse">
                     <!-- Second visualization will go here-->
                     <h2 id="g2"></h2>
                     <div class="row">
@@ -349,7 +349,7 @@
         };
 
         //define input file
-        let file = "GCI_CompleteData4.csv";
+        let file = "GCI_CompleteData5.csv";
 
         // Define margins
         var margin = { top: 10, right: 10, bottom: 45, left: 55 };
@@ -365,8 +365,9 @@
             return (value.Year == display_year)
         }
 
+        var countryForPillars = "";
         function countryAndYearFilter0(value) {
-            return yearFilter(value) && value.Country == country;
+            return yearFilter(value) && value.Country == countryForPillars;
         }
 
         //country to filter for
@@ -623,7 +624,7 @@
         //Add legend frame
         var legend_margin = { top: 10, right: 10, bottom: 10, left: 10 };
         var rect_width = svg_width * 0.23;
-        var rect_height = svg_height * .4;
+        var rect_height = svg_height * .44;
         var gap = 10;
         svg.append("rect")
             .attr("x", svg_width - rect_width)
@@ -687,6 +688,23 @@
             ;
             i++;
         }
+        svg.append("rect")
+            // .attr("id","blue")
+            .attr("x", svg_width - rect_width + legend_margin.left)
+            .attr("y", legend_margin.top + i * (gap + legend_circle_r))
+            .attr("width", legend_circle_r)
+            .attr("height", legend_circle_r)
+            .style("fill", "black");
+
+            svg.append("text")
+            .attr("transform",
+                "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+                (legend_margin.top + 10 + i*(gap + legend_circle_r)) + ")")
+            // .style("text-anchor", "middle")
+            .text("Missing GCI")
+            .attr('font-size', '14')
+            ;
+
         // svg.append("text")
         //     .attr("transform",
         //         "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
@@ -728,7 +746,7 @@
         }, function (error) {
             console.log("Error Loading data!");
             console.log(error);
-            document.getElementById("hans").innerHTML += "<br/><span style=\"color: red;\"> Error Loading Data! Please check that " + file + " is present in the same directory as this html file. <br/><br/> The " + file + " was included with the submission of this assignmnet.<br/><br/> Please note that GCI_CompleteData3.csv may NOT be used! <br/><br/> Both " + file + " and GCI_CompleteData3.csv have the same contents, however the rows in " + file + " have been order based on country population and this visualization relies on this ordering.</span>";
+            document.getElementById("hans").innerHTML += "<br/><span style=\"color: red;\"> Error Loading Data! Please check that " + file + " is present in the same directory as this html file. <br/><br/> The " + file + " was included with the submission of this assignmnet.<br/><br/> Please note that GCI_CompleteData4.csv may NOT be used! <br/><br/> Both " + file + " and GCI_CompleteData4.csv have the same contents, however the rows in " + file + " have been order based on country population and this visualization relies on this ordering.</span>";
         });
 
         function handleData(dataset) {
@@ -853,66 +871,45 @@
             .attr("id", "x-axis0")
             .attr("transform", "translate(0," + svg_height + ")");
 
+
+        // Legend Box for 12 Pillars
+        // Note that some of the dimensions are the same as for the legend box for main visualization above
+        svgGCI.append("rect")
+            .attr("x", svg_width - rect_width)
+            .attr("y", 0)
+            .attr("width", rect_width*0.75)
+            .attr("height", svg_height*0.15)
+            .style("fill", "lightsteelblue")
+            .style("opacity", .9);
+
+        function addToLegend(side, country){
+            //Add the dot to the legend
+            svgGCI.select(side === "left" ? '#leftDot' : '#rightDot').remove();
+            svgGCI.append("rect")
+                    .attr("x", svg_width - rect_width + 10)
+                    .attr("y", side === "left" ? 10 : (20 + gap))
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .style("stroke", "black")
+                    .style("fill", side === "left" ? "#fc8d59" : "#91bfdb")
+                    .attr("id", side === "left" ? 'leftDot' : 'rightDot');
+
+            svgGCI.select(side === "left" ? '#leftText' : '#rightText').remove();
+
+            svgGCI.append("text")
+                .attr("transform",
+                    "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+                    (legend_margin.top + (side === "left" ? 0 : (10+gap)) +  legend_circle_r) + ")")
+                // .style("text-anchor", "middle")
+                .attr('font-size', '14')
+                .text(country)
+                .attr("id", side === "left" ? 'leftText' : 'rightText');
+        }
         // =================================
         // generate vis for pillars function
         // =================================
         function generateVisForPillars(dataset, side = "left") {
-            country = side === "left" ? $('#countryDropDownInputLeft').val() : $('#countryDropDownInputRight').val();
-
-            // Legend Box
-            if ($('#countryDropDownInputLeft').val() || $('#countryDropDownInputRight').val()) {
-                svgGCI.selectAll("#legendBox").enter()
-                    .append("rect")
-                    .attr("id", "legendBox")
-                    .attr("x", svg_width - rect_width)
-                    .attr("y", 0)
-                    .attr("width", rect_width)
-                    .attr("height", rect_height)
-                    .style("fill", "lightgray")
-                    .style("opacity", .9)
-                    ;
-            };
-
-            if ($('#countryDropDownInputLeft').val()) {
-                svgGCI.append("rect")
-                    .attr("x", svg_width - rect_width + 10)
-                    .attr("y", 10)
-                    .attr("width", 10)
-                    .attr("height", 10)
-                    .style("fill", "#fc8d59");
-
-                var d = [$('#countryDropDownInputLeft').val()];
-                // console.log(d);
-                svgGCI.selectAll("#leftText").data(d).enter().append("text")
-                    .attr("transform",
-                        "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
-                        (legend_margin.top + 10 + gap + legend_circle_r) + ")")
-                    // .style("text-anchor", "middle")
-                    // .attr('font-size', '14')
-                    .text(function (d) {
-                        // console.log(d);
-                        return d
-                    })
-                    .attr("id", "leftText")
-                    ;
-            };
-
-            if ($('#countryDropDownInputRight').val()) {
-                svgGCI.append("rect")
-                    .attr("x", svg_width - rect_width + 10)
-                    .attr("y", 20 + gap)
-                    .attr("width", 10)
-                    .attr("height", 10)
-                    .style("fill", "#91bfdb");
-
-                svgGCI.append("text")
-                    .attr("transform",
-                        "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
-                        (legend_margin.top + 10 + gap + legend_circle_r) + ")")
-                    // .style("text-anchor", "middle")
-                    .text($('#countryDropDownInputRight').val());
-            }
-
+            countryForPillars = side === "left" ? $('#countryDropDownInputLeft').val() : $('#countryDropDownInputRight').val();
 
             // Update the domain of the x scale
             // Call the x-axis
@@ -996,6 +993,24 @@
                     .style("fill", "Red")
                     .remove();
             } else { //right side...
+                /*svgGCI.append("rect")
+                    .attr("x", svg_width - rect_width + 10)
+                    .attr("y", 20 + gap)
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .style("fill", "#91bfdb");
+
+                svgGCI.select('#rightText').remove();
+
+                svgGCI.append("text")
+                    .attr("transform",
+                        "translate(" + (svg_width - rect_width + legend_margin.left + legend_circle_r + gap) + " ," +
+                        (legend_margin.top + 10 + gap + legend_circle_r) + ")")
+                    // .style("text-anchor", "middle")
+                    .attr('font-size', '14')
+                    .text(country)
+                    .attr("id", "rightText");*/
+
                 /******** PERFORM DATA JOIN ************/
                 // Join new data with old elements, if any.
                 let rightBars = svgGCI.selectAll("#rect_right")
@@ -1063,6 +1078,8 @@
                     .style("fill", "red")
                     .remove();
             }
+
+            addToLegend(side, countryForPillars);
         }
     });
 
