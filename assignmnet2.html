@@ -163,14 +163,6 @@
                     <!-- Second visualization will go here-->
                     <h2 id="g2"></h2>
                     <div class="row">
-                        <div class="col-xs-12">
-                            <h5>You may view the 12 pillars of Global Competitiveness Index (GCI) of one or two
-                                countries. If two countries are
-                                viewed simulatnously, their GCI values will be directly compared against each others.
-                            </h5>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-xs-6">
                             <input list="countryDropDown" name="browser" id="countryDropDownInputLeft" placeholder="Select Country One">
                             <datalist id="countryDropDown">
@@ -268,7 +260,7 @@
                 $('#mainVisualizationDisplayButton').addClass('btn-success').removeClass('btn-danger');
                 $('#mainVisualizationDisplayButton p').text("Show Main Visualisation");
             }
-            console.log("Show Visualization Button state:: is showing? " + showingMainVisualization); //TESTING
+            // console.log("Show Visualization Button state:: is showing? " + showingMainVisualization); //TESTING
         });
 
         //scroll into the view the pillars visualization once the user decides to click the button to see it
@@ -278,7 +270,7 @@
 
         //initial state of the visualization display
         //let showingGCIVisualization = false;
-        let showingGCIVisualization = true;
+        let showingGCIVisualization = false;
         let firstClick = true;
         //assigning callbacks to button
         $("#gciVisualizationDisplayButton").on("click", function () {
@@ -295,7 +287,7 @@
                 $('#gciVisualizationDisplayButton').addClass('btn-success').removeClass('btn-danger');
                 $('#gciVisualizationDisplayButton p').text("Show Pillars of GCI");
             }
-            console.log("Show GCI Visualization Button state:: is showing? " + showingGCIVisualization); //TESTING
+            // console.log("Show GCI Visualization Button state:: is showing? " + showingGCIVisualization); //TESTING
         });
 
 
@@ -315,7 +307,7 @@
             //showGCIpillars(country, comparing); //Show the GCI pillars for this country and compare with other if needed
             generateVisForPillars(dataset);
 
-            console.log("showPillarsButtonLeft:: is showing trace? " + country); //TESTING
+            // console.log("showPillarsButtonLeft:: is showing trace? " + country); //TESTING
         });
 
         //assign callback to button
@@ -341,7 +333,7 @@
         let reversedDataset = {};
 
         document.getElementById("yearSlider").oninput = function () {
-            console.log("Year Slider:: value -> " + this.value); //TESTING
+            // console.log("Year Slider:: value -> " + this.value); //TESTING
             display_year = +this.value;
             generateVis(dataset, false);
             generateVisForPillars(dataset);
@@ -512,7 +504,7 @@
             if (showingTrace) {
                 country = $('#countryDropDownInput').val();
                 let selectedCountryInfo = reversedDataset.filter(countryAndYearFilter);
-                console.log(selectedCountryInfo);
+                // console.log(selectedCountryInfo);
                 //let selectedCountryInfo = data.filter(countryAndYearFilter);
 
                 //svg.selectAll("#"+country).remove();
@@ -525,7 +517,7 @@
                 let enterTrace = pointsTrace.enter()
                     .append("circle")
                     .attr("id", function (d) {
-                        console.log(d.Year); //TESTING
+                        // console.log(d.Year); //TESTING
                         //return d.Country;
                         return "circle_trace";
                     })
