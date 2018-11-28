@@ -1,3 +1,7 @@
+To run: 
+In folder, open Command Line, input 'python -m http.server'
+On Browser, open http://localhost:8000/assignmnet2.html
+
 Key features:
 The main visualisation of GDP on X-axis and GCI on Y-axis shall be the first thing being seen. You may select to view any particular year at any time using the year slider. To control the animation playback over years click the "Play" button which also doubles as pause button. The animation will loop through years automatically.
 The country region is presented with color blind friendly color set provided by ColorBrewer. Notice the black dot on X-axis, this is countries which have missing data in GCI.
